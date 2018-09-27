@@ -1,0 +1,87 @@
+/*532 project*/
+/*sets font family*/
+body {
+	font-family: sans-serif;
+	min-width: 800px;
+}
+/*main header format*/
+h1 {
+	padding: 10px;
+	border-bottom: 1px solid black;
+	background-image: linear-gradient(to right, white 30%,silver 80%, blue);	
+}
+/*footer format*/
+footer {
+	font-style: italic;
+	float: right;
+}
+section {
+	width:auto;
+}
+/*map size*/
+#map {
+	height: 700px;
+	width: auto;
+}
+/*nav bar*/
+#navbar {
+	width: 250px;
+	float: right;
+	background-color:  #f7f3d1;
+}
+#navbar>div, h2 {
+	padding-left: 10px;
+	padding-right: 10px;
+	cursor: pointer;
+}
+/*search bar*/
+#searchMap{
+	background-color: aliceblue;
+    padding: 5px;
+    width: auto;
+}
+#seachMapInput {
+	width: 160px;
+}
+.layer:hover {
+	background-color: blue;
+}
+.selectedLayer {
+	background-color: gold;
+}
+/*slider CSS*/
+.slidecontainer {
+    width: 100%;
+}
+.slider {
+    -webkit-appearance: none;  
+    appearance: none;
+    width: 100%; 
+    height: 25px; 
+    background: #d3d3d3; 
+    outline: none; 
+    opacity: 0.7; 
+    -webkit-transition: .2s; 
+    transition: opacity .2s;
+}
+
+.slider:hover {
+    opacity: 1; /* Fully shown on mouse-over */
+}
+
+/* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */ 
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none; /* Override default look */
+    appearance: none;
+    width: 25px; /* Set a specific slider handle width */
+    height: 25px; /* Slider handle height */
+    background: #4CAF50; /* Green background */
+    cursor: pointer; /* Cursor on hover */
+}
+
+.slider::-moz-range-thumb {
+    width: 25px; /* Set a specific slider handle width */
+    height: 25px; /* Slider handle height */
+    background: #4CAF50; /* Green background */
+    cursor: pointer; /* Cursor on hover */
+} 
