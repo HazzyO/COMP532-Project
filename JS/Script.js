@@ -206,11 +206,22 @@ google.maps.event.addListener(map, 'zoom_changed', function() {
 
 //slider
 var slider = document.getElementById("myRange");
-sliderFunction = function(){
-	month = getMonth((slider.value-1)%12);
-	year = 2006+Math.floor((slider.value-1)/12);
-    document.getElementById("sliderValue").innerHTML = month+" "year;
+	
+updateSlider = function(){
+	alert("changed");
+	var month = ((slider.value-1)%12)+1;
+	var year = 2006+Math.floor((slider.value)/12);
+    document.getElementById("sliderValue").innerHTML = month+" "+year;
+	curLayer.setOptions({
+		query: {
+			select: "Latitude",
+			from: selLayer,
+			where: "'DateTime' >= '"+month+"/01/"+year+"' AND 'DateTime' <= '"+month+"/31/"+year+"'"
+		}
+	});
 }
-sliderFunction();
-// Update the current slider value (each time you drag the slider handle)
-slider.oninput = sliderFunction();
+slider.onchange = function(){
+	updateSlider();
+}
+
+updateSlider();
