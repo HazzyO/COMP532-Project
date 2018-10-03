@@ -208,7 +208,6 @@ google.maps.event.addListener(map, 'zoom_changed', function() {
 var slider = document.getElementById("myRange");
 	
 updateSlider = function(){
-	alert("changed");
 	var month = ((slider.value-1)%12)+1;
 	var year = 2006+Math.floor((slider.value)/12);
     document.getElementById("sliderValue").innerHTML = month+" "+year;
@@ -220,7 +219,7 @@ updateSlider = function(){
 		}
 	});
 }
-slider.onchange = function(){
+slider.oninput = function(){
 	updateSlider();
 }
 
