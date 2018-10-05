@@ -7,6 +7,7 @@ var dateCnst = "";
 var layerPolys;
 var month;
 var year;
+var valueGroups = [];
 //slider
 var slider = document.getElementById("myRange");
 	
@@ -31,46 +32,62 @@ setLayer = function(i){
     	case 0: selLayer="1fLMfcSWoNcHWxAntzKnXmNrfjfy-YSC_QbXqNcZI";
 		$(".selectedLayer").removeClass("selectedLayer");
 		$('#bdisc').addClass("selectedLayer");
+        setGroups(2, 5, 12);
 		addLayer();
     	break;
     	case 1: selLayer="1ejAYrtvIR-S7XzY7s6Qjj7d7sQu2TqLrMDTykwef";
 		$(".selectedLayer").removeClass("selectedLayer");
 		$('#drp').addClass("selectedLayer");
+        setGroups(0.010, 0.020, 0.050);
 		addLayer();
     	break;
     	case 2: selLayer="1ia1bHfcAQrChqxtF9AEYz6_4MYfkegYJKDGcHZj8";
 		$(".selectedLayer").removeClass("selectedLayer");
 		$('#ecoli').addClass("selectedLayer");
+        setGroups(540, 1000, 1200);
 		addLayer();
     	break;
     	case 3: selLayer="1HqqTJHr7nyNccYWFrvvozPpqb0HXKcOPYxOg8v8S";
 		$(".selectedLayer").removeClass("selectedLayer");
 		$('#nh4').addClass("selectedLayer");
+        setGroups(0.03, 0.24, 1.30);
 		addLayer();
     	break;
     	case 4: selLayer="1xPnv-6ahUxikMdn23Q2hF4ZFoDGmpFqx2zsoHBKf";
 		$(".selectedLayer").removeClass("selectedLayer");
 		$('#tb').addClass("selectedLayer");
+        setGroups(0.03, 0.24, 1.30);
 		addLayer();
     	break;
     	case 5: selLayer="1xEsdP3obQ3-vbR37KD7mXKSydQsfr8LQjIzpaQKI";
 		$(".selectedLayer").removeClass("selectedLayer");
 		$('#tn').addClass("selectedLayer");
+        setGroups(160, 350, 750);
 		addLayer();
     	break;
     	case 6: selLayer="1teN8WRrxEDmLfZbfGgGmXrEXYBR1nWCotJUy1_Hc";
 		$(".selectedLayer").removeClass("selectedLayer");
 		$('#ton').addClass("selectedLayer");
+        setGroups(0.008, 0.007, 0.005);
 		addLayer();
     	break;
     	case 7: selLayer="1Ztq6JuufyZ2Vq4UDK_i3RKv7OT9PDW0SYe035JGp";
 		$(".selectedLayer").removeClass("selectedLayer");
 		$('#turb').addClass("selectedLayer");
+        setGroups(1, 2.4, 6.9);
 		addLayer();
     	break;
     }
     updateSlider();
 }
+
+function setGroups(a, b, c){
+    valueGroups = [];
+    valueGroups.push(a);
+    valueGroups.push(b);
+    valueGroups.push(c);
+}
+
 addLayer = function() {
 	if(curLayer!=null){
 		curLayer.setMap(null);
@@ -89,35 +106,29 @@ addLayer = function() {
       },
       styles: [
           {
-              where: "'Original.Value' > 12",
+              where: "'Original.Value' > " + valueGroups[2],
               markerOptions: {
                   iconName: "small_red"
               }
           },
           {
-              where: "'Original.Value' <= 12",
+              where: "'Original.Value' <= " + valueGroups[2],
               markerOptions: {
                   iconName: "small_yellow"
               }
           },
           {
-              where: "'Original.Value' <= 5",
+              where: "'Original.Value' <= " + valueGroups[1],
               markerOptions: {
                   iconName: "small_green"
               }
           },
           {
-              where: "'Original.Value' <= 2",
+              where: "'Original.Value' <= " + valueGroups[0],
               markerOptions: {
                   iconName: "small_blue"
               }
-          },
-          /*{
-              where: "Original.Value <= 0.2",
-              markerOptions: {
-                  iconName: "small_blue"
-              }
-          }*/
+          }
       ]
     });
 }
