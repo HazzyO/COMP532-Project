@@ -86,7 +86,39 @@ addLayer = function() {
       options: {
         styleId: 2,
         templateId: 2
-      }
+      },
+      styles: [
+          {
+              where: "'Original.Value' > 12",
+              markerOptions: {
+                  iconName: "small_red"
+              }
+          },
+          {
+              where: "'Original.Value' <= 12",
+              markerOptions: {
+                  iconName: "small_yellow"
+              }
+          },
+          {
+              where: "'Original.Value' <= 5",
+              markerOptions: {
+                  iconName: "small_green"
+              }
+          },
+          {
+              where: "'Original.Value' <= 2",
+              markerOptions: {
+                  iconName: "small_blue"
+              }
+          },
+          /*{
+              where: "Original.Value <= 0.2",
+              markerOptions: {
+                  iconName: "small_blue"
+              }
+          }*/
+      ]
     });
 }
 
