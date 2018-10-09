@@ -8,6 +8,7 @@
 				COMP532 - Project
 			</title>
 			<link href="./CSS/main.css" rel="stylesheet" type="text/css">
+			<link href="./CSS/jquery.rangerover.css"rel="stylesheet" type="text/css">
 		</head>
 		<body>	
 			<!--heading bar-->
@@ -17,11 +18,6 @@
 			<!--content section-->
 			<!--nav bar shows layer options and allows search-->
 			<div id="navbar">
-				<div id="searchMap">
-					<label for="seachMapInput" id="searchMapLabel">Search for river:</label>
-					<input type="text" id="seachMapInput" placeholder="Enter river here">
-					<input type="button" id="searchMapButton" value="Search">
-				</div>
 				<div id="bdisc" class="layer" onclick='setLayer(0)'>BDISC</div>
 				<div id="drp" class="layer" onclick='setLayer(1)'>DRP</div>
 				<div id="ecoli" class="layer" onclick='setLayer(2)'>ECOLI</div>
@@ -34,10 +30,6 @@
 			<!--main section element to contains map-->
 			<section>
 				<div id="map"></div>
-				<div class="slidecontainer">
-					<input type="range" min="1" max="120" value="120" class="slider" id="myRange">
-				</div>
-				<div id="sliderValue"></div>
 			</section>
 			<hr>
 			<footer>

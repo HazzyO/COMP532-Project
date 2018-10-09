@@ -9,14 +9,29 @@ var month;
 var year;
 var valueGroups = [];
 //slider
-var slider = document.getElementById("myRange");
+var slider = document.createElement("input");
+var sliderValue = document.createElement("output");
+var sliderContainer = document.createElement("div");
+
+slider.setAttribute("type","range");
+slider.setAttribute("min","1");
+slider.setAttribute("max","120");
+slider.setAttribute("value","1");
+slider.className = "slider";
+slider.id = "slide";
+slider.oninput = function(){
+	updateSlider();
+}
+sliderValue.setAttribute("for","slide");
+sliderValue.id = "sliderValue";
+sliderContainer.id = "sliderContainer";
 
 var months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
 	
 updateSlider = function(){
 	var month = ((slider.value-1)%12)+1;
 	var year = 2007+Math.floor((slider.value-1)/12);
-    document.getElementById("sliderValue").innerHTML = months[month-1]+" "+year;
+    sliderValue.innerHTML = months[month-1]+" "+year;
 	curLayer.setOptions({
 		query: {
 			select: "Latitude",
@@ -24,9 +39,14 @@ updateSlider = function(){
 			where: "'DateTime' >= '"+month+"/01/"+year+"' AND 'DateTime' <= '"+month+"/31/"+year+"'"
 		}
 	});
-}
-slider.oninput = function(){
-	updateSlider();
+	var width = sliderContainer.offsetWidth;
+	var tmp = (slider.value-1)/119;
+	if(width*tmp-25<0){
+		tmp=(25/width);
+	} if(width*tmp >width-30){
+		tmp = (width-30)/width;
+	}
+	$(sliderValue).css('left','calc('+tmp*100+'% - 25px)');
 }
 
 setLayer = function(i){
@@ -142,6 +162,12 @@ initialize = function() {
     map = new google.maps.Map(mapDiv, {
       center: new google.maps.LatLng(-40.173627, 172.524935),
       zoom: 5,
+	  mapTypeControl: false,
+	  streetViewControl: false,
+	  fullscreenControl: true,
+	  zoomControlOptions: {
+		  position: google.maps.ControlPosition.RIGHT_TOP
+	  },
       styles: [
           {
             elementType: 'geometry',
@@ -247,8 +273,10 @@ initialize = function() {
         templateId: 2
       }
     });   
-
 	addLayer();
+	sliderContainer.appendChild(sliderValue);
+	sliderContainer.appendChild(slider);
+	map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(sliderContainer);
 }
 
 //initilises the map
@@ -267,5 +295,9 @@ google.maps.event.addListener(map, 'zoom_changed', function() {
           layerPolys.setMap(null);          
     } 
 });
-
-updateSlider();
+google.maps.event.addListenerOnce( map, 'idle', function() {
+   updateSlider();
+});
+google.maps.event.addListener( map, 'resize', function() {
+   updateSlider();
+});
