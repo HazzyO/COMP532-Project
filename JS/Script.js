@@ -9,11 +9,13 @@ var month;
 var year;
 //slider
 var slider = document.getElementById("myRange");
+
+var months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
 	
 updateSlider = function(){
 	var month = ((slider.value-1)%12)+1;
 	var year = 2007+Math.floor((slider.value-1)/12);
-    document.getElementById("sliderValue").innerHTML = month+" "+year;
+    document.getElementById("sliderValue").innerHTML = months[month-1]+" "+year;
 	curLayer.setOptions({
 		query: {
 			select: "Latitude",
