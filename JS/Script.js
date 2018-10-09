@@ -3,11 +3,30 @@
 var map;
 var selLayer;
 var curLayer;
+var selLayerDiv;
 var dateCnst = "";
 var layerPolys;
 var month;
 var year;
 var valueGroups = [];
+
+//change layer bar
+var nav = document.createElement("div");
+nav.id = "nav";
+
+var layerIds = ["bdisc","drp","ecoli","nh4","tb","tn","ton","turb"];
+var layerText = ["Black disc visibility","Dissolved reactive Phosphorus","E. coli","Ammoniacal Nitrogen","Total Phosphorus","Total Nitrogen","Total Oxidised Nitrogen","Turbidity"];
+
+for(var i = 0; i < 8; i++){
+	var tmp = document.createElement("div");
+	tmp.id = layerIds[i];
+	tmp.appendChild(document.createTextNode(layerText[i]));
+	tmp.setAttribute("onclick","setLayer("+i+")");
+	tmp.className = "layer";
+	nav.appendChild(tmp);
+}
+	
+
 //slider
 var slider = document.createElement("input");
 var sliderValue = document.createElement("output");
@@ -303,6 +322,7 @@ initialize = function() {
 	sliderContainer.appendChild(sliderValue);
 	sliderContainer.appendChild(slider);
 	map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(sliderContainer);
+	map.controls[google.maps.ControlPosition.RIGHT_CENTER].push(nav);
 }
 //initilises the map
 initialize();
@@ -322,6 +342,9 @@ google.maps.event.addListener(map, 'zoom_changed', function() {
 });
 google.maps.event.addListenerOnce( map, 'idle', function() {
    updateSlider();
+   if(selLayerDiv!=null){
+	   nav.appendChild(selLayerDiv);
+   }
 });
 google.maps.event.addListener( map, 'resize', function() {
    updateSlider();
