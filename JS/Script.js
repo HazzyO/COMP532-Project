@@ -108,25 +108,25 @@ addLayer = function() {
       },
       styles: [
           {
-              where: "'Original.Value' > " + valueGroups[2],
+              where: "'OriginalValue' > " + valueGroups[2],
               markerOptions: {
                   iconName: "small_red"
               }
           },
           {
-              where: "'Original.Value' <= " + valueGroups[2],
+              where: "'OriginalValue' <= " + valueGroups[2],
               markerOptions: {
                   iconName: "small_yellow"
               }
           },
           {
-              where: "'Original.Value' <= " + valueGroups[1],
+              where: "'OriginalValue' <= " + valueGroups[1],
               markerOptions: {
                   iconName: "small_green"
               }
           },
           {
-              where: "'Original.Value' <= " + valueGroups[0],
+              where: "'OriginalValue' <= " + valueGroups[0],
               markerOptions: {
                   iconName: "small_blue"
               }
