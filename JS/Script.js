@@ -223,8 +223,8 @@ initialize = function() {
     var mapDiv = document.getElementById('map');
        
     map = new google.maps.Map(mapDiv, {
-      center: new google.maps.LatLng(-40.173627, 172.524935),
-      zoom: 5,
+      center: new google.maps.LatLng(-41.273627, 172.524935),
+      zoom: 5.5,
 	  mapTypeControl: false,
 	  streetViewControl: false,
 	  fullscreenControl: true,
