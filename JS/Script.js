@@ -29,18 +29,18 @@ arrow.onclick = function(){
 		layersHidden = true;
 	}
 }
-	
 
-nav.appendChild(arrow);
-
+//add layer nav items to map
 var layerIds = ["bdisc","drp","ecoli","nh4","tb","tn","ton","turb"];
 var layerText = ["Black disc visibility","Dissolved reactive Phosphorus","E. coli","Ammoniacal Nitrogen","Total Phosphorus","Total Nitrogen","Total Oxidised Nitrogen","Turbidity"];
+
+nav.appendChild(arrow);
 
 for(var i = 0; i < 8; i++){
 	var tmp = document.createElement("div");
 	tmp.id = layerIds[i];
 	tmp.appendChild(document.createTextNode(layerText[i]));
-	tmp.setAttribute("onclick","setLayer("+i+")");
+	tmp.setAttribute('onclick', 'setLayer('+i+')');
 	$(tmp).addClass("layer");
 	$(tmp).addClass("hideLayers");
 	nav.appendChild(tmp);
@@ -85,10 +85,10 @@ updateSlider = function(){
 		tmp = (width-30)/width;
 	}
 	$(sliderValue).css('left','calc('+tmp*100+'% - 25px)');
-};
+}
 slider.oninput = function(){
 	updateSlider();
-};
+}
 
 // Set the layer (water quality test) according to the user's selection (RHS of main page)
 setLayer = function(i){
@@ -98,7 +98,7 @@ setLayer = function(i){
 		$('#bdisc').addClass("selectedLayer");                        // Add highlight to current selection
         setGroups(2, 5, 12);                                          // Set the range divisions for low, medium & high
 		addLayer();                                                   // Update the map with user selections
-    	break;
+		break;
     	case 1: selLayer="1ejAYrtvIR-S7XzY7s6Qjj7d7sQu2TqLrMDTykwef";
 		$(".selectedLayer").removeClass("selectedLayer");
 		$('#drp').addClass("selectedLayer");
@@ -143,7 +143,7 @@ setLayer = function(i){
     	break;
     }
     updateSlider();
-};
+}
 
 // Marker divisions for assigning colours
 function setGroups(a, b, c){
@@ -158,7 +158,6 @@ addLayer = function() {
 	if(curLayer!=null){
 		curLayer.setMap(null);
 	}
-
 	// Add user's selected layer
 	curLayer = new google.maps.FusionTablesLayer({
       map: map,
@@ -215,7 +214,7 @@ addLayer = function() {
             "<img src=\"http://occupodo.ddns.net:3000/?minIn=0&maxIn=10&originalValue=5.7&average=7&tubeColor=0&previousAverage=7&year=2009&percentile=50th\" height=\"170\" width=\"120\"> "+
             "</div></div>";
     });
-};
+}
 
 // Create the underlying map
 initialize = function() {

@@ -32,7 +32,6 @@ section {
 	padding-left: 10px;
 	padding-right: 10px;
 	cursor: pointer;
-	width: calc(100%-20px);
 }
 .layer:hover {
 	background-color: blue;
