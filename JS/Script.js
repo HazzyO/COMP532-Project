@@ -200,6 +200,20 @@ addLayer = function() {
           }
       ]
     });
+    
+    // Create the legend and display on the map
+    var legend = document.createElement('div');
+    legend.id = 'legend';
+    var content = [];
+    content.push('<h3>Attribute Values</h3>');
+    content.push('<p><div class="color blue"></div>0 - val1</p>');
+    content.push('<p><div class="color green"></div>val1 - val2</p>');
+    content.push('<p><div class="color yellow"></div>val2 - val3</p>');
+    content.push('<p><div class="color red"></div>val3+</p>');
+    legend.innerHTML = content.join('');
+    legend.index = 1;
+    map.controls[google.maps.ControlPosition.TOP_RIGHT].push(legend);
+
 
     // Collection site click event
     google.maps.event.addListener(curLayer, 'click', function(e) {
@@ -224,7 +238,7 @@ initialize = function() {
        
     map = new google.maps.Map(mapDiv, {
       center: new google.maps.LatLng(-41.273627, 172.524935),
-      zoom: 5.5,
+      zoom: 5,
 	  mapTypeControl: false,
 	  streetViewControl: false,
 	  fullscreenControl: true,

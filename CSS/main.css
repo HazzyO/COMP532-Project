@@ -104,3 +104,40 @@ section {
 	padding: 5px;
 	width: 50px;
 }
+
+/* Style for the legend */
+#legend {
+    background: #FFF;
+    padding: 10px;
+    margin: 10px;
+    font-size: 12px;
+    font-family: Arial, sans-serif;
+}
+
+.color {
+    border: 1px solid;
+    height: 12px;
+    width: 12px;
+    margin-right: 3px;
+    float: left;
+}
+
+.red {
+    background: #C00;
+}
+
+.yellow {
+    background: #FF3;
+}
+
+.green {
+    background: #6F0;
+}
+
+.blue {
+    background: #06C;
+}
+
+.purple {
+    background: #63C;
+}
