@@ -202,6 +202,12 @@ addLayer = function() {
     });
     
     // Create the legend and display on the map
+    var tmp = document.getElementById("legend");
+    if(document.body.contains(tmp))
+    {
+        tmp.parentNode.removeChild(tmp);
+    }
+    
     var legend = document.createElement('div');
     legend.id = 'legend';
     var content = [];
