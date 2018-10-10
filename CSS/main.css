@@ -24,30 +24,41 @@ section {
 	width: auto;
 }
 /*nav bar*/
-#navbar {
-	width: 250px;
-	float: right;
+#nav {
+	width: 180px;
 	background-color:  #f7f3d1;
 }
-#navbar>div, h2 {
+#nav>div {
 	padding-left: 10px;
 	padding-right: 10px;
 	cursor: pointer;
-}
-/*search bar*/
-#searchMap{
-	background-color: aliceblue;
-    padding: 5px;
-    width: auto;
-}
-#seachMapInput {
-	width: 160px;
+	width: calc(100%-20px);
 }
 .layer:hover {
 	background-color: blue;
 }
+.hideLayers {
+	display:none;
+}
 .selectedLayer {
 	background-color: gold;
+	display: block;
+}
+.arrowDown {
+  width: 0; 
+  height: 0; 
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 10px solid black;
+  float: right;
+}
+.arrowUp {
+  width: 0; 
+  height: 0; 
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-bottom: 10px solid black;
+  float: right;
 }
 /*slider CSS*/
 #sliderContainer {

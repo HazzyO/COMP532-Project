@@ -9,10 +9,29 @@ var layerPolys;
 var month;
 var year;
 var valueGroups = [];
+var layersHidden = true;
 
 //change layer bar
 var nav = document.createElement("div");
 nav.id = "nav";
+nav.appendChild(document.createTextNode("Layer: "));
+
+var arrow = (document.createElement("span"));
+arrow.className = "arrowDown"
+arrow.onclick = function(){
+	if(layersHidden){
+		$(".hideLayers").removeClass("hideLayers");
+		arrow.className = "arrowUp";
+		layersHidden = false;
+	} else {
+		$(".layer").addClass("hideLayers");
+		arrow.className = "arrowDown";
+		layersHidden = true;
+	}
+}
+	
+
+nav.appendChild(arrow);
 
 var layerIds = ["bdisc","drp","ecoli","nh4","tb","tn","ton","turb"];
 var layerText = ["Black disc visibility","Dissolved reactive Phosphorus","E. coli","Ammoniacal Nitrogen","Total Phosphorus","Total Nitrogen","Total Oxidised Nitrogen","Turbidity"];
@@ -22,10 +41,10 @@ for(var i = 0; i < 8; i++){
 	tmp.id = layerIds[i];
 	tmp.appendChild(document.createTextNode(layerText[i]));
 	tmp.setAttribute("onclick","setLayer("+i+")");
-	tmp.className = "layer";
+	$(tmp).addClass("layer");
+	$(tmp).addClass("hideLayers");
 	nav.appendChild(tmp);
 }
-	
 
 //slider
 var slider = document.createElement("input");
@@ -35,7 +54,7 @@ var sliderContainer = document.createElement("div");
 slider.setAttribute("type","range");
 slider.setAttribute("min","1");
 slider.setAttribute("max","120");
-slider.setAttribute("value","1");
+slider.setAttribute("value","120");
 slider.className = "slider";
 slider.id = "slide";
 slider.oninput = function(){
@@ -201,7 +220,6 @@ addLayer = function() {
 // Create the underlying map
 initialize = function() {
     var mapDiv = document.getElementById('map');
-	setLayer(0);
        
     map = new google.maps.Map(mapDiv, {
       center: new google.maps.LatLng(-40.173627, 172.524935),
@@ -322,30 +340,37 @@ initialize = function() {
 	sliderContainer.appendChild(sliderValue);
 	sliderContainer.appendChild(slider);
 	map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(sliderContainer);
-	map.controls[google.maps.ControlPosition.RIGHT_CENTER].push(nav);
+	map.controls[google.maps.ControlPosition.TOP_LEFT].push(nav);
+	
+	google.maps.event.addListenerOnce(map, 'idle', function() {
+		var checkLoad = setInterval(check, 1000);
+	
+		function check(){
+			if(!$(".selectedLayer").length){
+				updateSlider();
+				setLayer(0);
+				clearInterval(checkLoad);
+			}
+		}
+	});
+		
+	google.maps.event.addListener(map, 'resize', function() {
+		updateSlider();
+	});
+	
+	//hide show layers on zoom
+	//currently as test
+	google.maps.event.addListener(map, 'zoom_changed', function() { 
+		var zoomLevel = map.getZoom(); 
+		// Show a finer geometry when the map is zoomed in 
+		if (zoomLevel >= 5) { 
+			layerPolys.setMap(map);
+		} 
+		// Show a coarser geometry when the map is zoomed out 
+		else { 
+			layerPolys.setMap(null);          
+		} 
+	});
 }
 //initilises the map
 initialize();
-
-//hide show layers on zoom
-//currently as test
-google.maps.event.addListener(map, 'zoom_changed', function() { 
-    var zoomLevel = map.getZoom(); 
-    // Show a finer geometry when the map is zoomed in 
-    if (zoomLevel >= 5) { 
-          layerPolys.setMap(map);
-    } 
-    // Show a coarser geometry when the map is zoomed out 
-     else { 
-          layerPolys.setMap(null);          
-    } 
-});
-google.maps.event.addListenerOnce( map, 'idle', function() {
-   updateSlider();
-   if(selLayerDiv!=null){
-	   nav.appendChild(selLayerDiv);
-   }
-});
-google.maps.event.addListener( map, 'resize', function() {
-   updateSlider();
-});
