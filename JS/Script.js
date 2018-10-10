@@ -206,10 +206,10 @@ addLayer = function() {
     legend.id = 'legend';
     var content = [];
     content.push('<h3>Attribute Values</h3>');
-    content.push('<p><div class="color blue"></div>0 - val1</p>');
-    content.push('<p><div class="color green"></div>val1 - val2</p>');
-    content.push('<p><div class="color yellow"></div>val2 - val3</p>');
-    content.push('<p><div class="color red"></div>val3+</p>');
+    content.push('<p><div class="color blue"></div>0 - '+valueGroups[0]+'</p>');
+    content.push('<p><div class="color green"></div>'+valueGroups[0]+' - '+valueGroups[1]+'</p>');
+    content.push('<p><div class="color yellow"></div>'+valueGroups[1]+' - '+valueGroups[2]+'</p>');
+    content.push('<p><div class="color red"></div>'+valueGroups[2]+'+</p>');
     legend.innerHTML = content.join('');
     legend.index = 1;
     map.controls[google.maps.ControlPosition.TOP_RIGHT].push(legend);
