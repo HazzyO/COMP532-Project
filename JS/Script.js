@@ -17,7 +17,7 @@ nav.id = "nav";
 nav.appendChild(document.createTextNode("Layer: "));
 
 var arrow = (document.createElement("span"));
-arrow.className = "arrowDown"
+arrow.className = "arrowDown";
 arrow.onclick = function(){
 	if(layersHidden){
 		$(".hideLayers").removeClass("hideLayers");
@@ -67,30 +67,32 @@ sliderContainer.id = "sliderContainer";
 var months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
 	
 updateSlider = function(){
-	var month = ((slider.value-1)%12)+1;
-	var year = 2007+Math.floor((slider.value-1)/12);
-    sliderValue.innerHTML = months[month-1]+" "+year;
-	curLayer.setOptions({
-		query: {
-			select: "Latitude",
-			from: selLayer,
-			where: "'DateTime' >= '"+month+"/01/"+year+"' AND 'DateTime' <= '"+month+"/31/"+year+"'"
+	if(curLayer!=null){
+		var month = ((slider.value-1)%12)+1;
+		var year = 2007+Math.floor((slider.value-1)/12);
+		sliderValue.innerHTML = months[month-1]+" "+year;
+		curLayer.setOptions({
+			query: {
+				select: "Latitude",
+				from: selLayer,
+				where: "'DateTime' >= '"+month+"/01/"+year+"' AND 'DateTime' <= '"+month+"/31/"+year+"'"
+			}
+		});
+		var width = sliderContainer.offsetWidth;
+		var tmp = (slider.value-1)/119;
+		if(width*tmp-25<0){
+			tmp=(25/width);
+		} if(width*tmp >width-30){
+			tmp = (width-30)/width;
 		}
-	});
-	var width = sliderContainer.offsetWidth;
-	var tmp = (slider.value-1)/119;
-	if(width*tmp-25<0){
-		tmp=(25/width);
-	} if(width*tmp >width-30){
-		tmp = (width-30)/width;
+		$(sliderValue).css('left','calc('+tmp*100+'% - 25px)');
 	}
-	$(sliderValue).css('left','calc('+tmp*100+'% - 25px)');
 }
 slider.oninput = function(){
 	updateSlider();
 }
 
-// Set the layer (water quality test) according to the user's selection (RHS of main page)
+// Set the layer (water quality test) according to the user's selection
 setLayer = function(i){
 	switch(i){
         case 0: selLayer="1fLMfcSWoNcHWxAntzKnXmNrfjfy-YSC_QbXqNcZI"; // Assign the appropriate table reference
@@ -335,7 +337,6 @@ initialize = function() {
         templateId: 2
       }
     });   
-	addLayer();
 	sliderContainer.appendChild(sliderValue);
 	sliderContainer.appendChild(slider);
 	map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(sliderContainer);
@@ -352,12 +353,11 @@ initialize = function() {
 			}
 		}
 	});
-		
-	google.maps.event.addListener(map, 'resize', function() {
-		updateSlider();
-	});
-	
-	//hide show layers on zoom
+}
+//initilises the map
+initialize();
+
+//hide show layers on zoom
 	//currently as test
 	google.maps.event.addListener(map, 'zoom_changed', function() { 
 		var zoomLevel = map.getZoom(); 
@@ -370,6 +370,8 @@ initialize = function() {
 			layerPolys.setMap(null);          
 		} 
 	});
-}
-//initilises the map
-initialize();
+
+			
+	google.maps.event.addListener(map, 'resize', function() {
+		updateSlider();
+	});
