@@ -14,7 +14,9 @@ var layersHidden = true;
 //change layer bar
 var nav = document.createElement("div");
 nav.id = "nav";
-nav.appendChild(document.createTextNode("Layer: "));
+var layerText = document.createElement("span");
+layerText.appendChild(document.createTextNode("Layer: "));
+nav.appendChild(layerText);
 
 var arrow = (document.createElement("span"));
 arrow.className = "arrowDown";
@@ -363,7 +365,7 @@ initialize = function() {
 	map.controls[google.maps.ControlPosition.TOP_LEFT].push(nav);
 	
 	google.maps.event.addListenerOnce(map, 'idle', function() {
-		var checkLoad = setInterval(check, 1000);
+		var checkLoad = window.setInterval(check, 1000);
 	
 		function check(){
 			if(!$(".selectedLayer").length){
@@ -383,11 +385,11 @@ initialize();
 		var zoomLevel = map.getZoom(); 
 		// Show a finer geometry when the map is zoomed in 
 		if (zoomLevel >= 5) { 
-			layerPolys.setMap(map);
+			//layerPolys.setMap(map);
 		} 
 		// Show a coarser geometry when the map is zoomed out 
 		else { 
-			layerPolys.setMap(null);          
+			//layerPolys.setMap(null);          
 		} 
 	});
 

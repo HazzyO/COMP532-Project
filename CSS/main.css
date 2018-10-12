@@ -29,9 +29,14 @@ section {
 	background-color:  #f7f3d1;
 	margin: 5px;
 }
+#nav>span {
+	font-size: 16px;
+	font-weight: bold;
+}
 #nav>div {
 	padding-left: 10px;
 	padding-right: 10px;
+	font-size: 14px;
 	cursor: pointer;
 }
 .layer:hover {
@@ -47,17 +52,17 @@ section {
 .arrowDown {
   width: 0; 
   height: 0; 
-  border-left: 10px solid transparent;
-  border-right: 10px solid transparent;
-  border-top: 10px solid black;
+  border-left: 15px solid transparent;
+  border-right: 15px solid transparent;
+  border-top: 15px solid black;
   float: right;
 }
 .arrowUp {
   width: 0; 
   height: 0; 
-  border-left: 10px solid transparent;
-  border-right: 10px solid transparent;
-  border-bottom: 10px solid black;
+  border-left: 15px solid transparent;
+  border-right: 15px solid transparent;
+  border-bottom: 15px solid black;
   float: right;
 }
 /*slider CSS*/
