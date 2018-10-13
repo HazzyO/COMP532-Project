@@ -39,9 +39,6 @@ section {
 	font-size: 14px;
 	cursor: pointer;
 }
-.layer:hover {
-	background-color: blue;
-}
 .hideLayers {
 	display:none;
 }
@@ -49,21 +46,33 @@ section {
 	background-color: gold;
 	display: block;
 }
-.arrowDown {
-  width: 0; 
-  height: 0; 
-  border-left: 15px solid transparent;
-  border-right: 15px solid transparent;
-  border-top: 15px solid black;
-  float: right;
+.layer:hover {
+	background-color: lightblue;
+}
+.layer:active {
+	background-color: lightgreen;
+	color: white;
+}
+.arrowUp, .arrowDown{
+	float: right;
+	width: 0; 
+	height: 0;
+}  
+.arrowDown { 
+	border-left: 15px solid transparent;
+	border-right: 15px solid transparent;
+	border-top: 15px solid green;
 }
 .arrowUp {
-  width: 0; 
-  height: 0; 
-  border-left: 15px solid transparent;
-  border-right: 15px solid transparent;
-  border-bottom: 15px solid black;
-  float: right;
+	border-left: 15px solid transparent;
+	border-right: 15px solid transparent;
+	border-bottom: 15px solid red;
+}
+.arrowDown:hover {
+	border-top: 15px solid lightblue;
+}
+.arrowUp:hover {
+	border-bottom: 15px solid lightblue;
 }
 /*slider CSS*/
 #sliderContainer {
