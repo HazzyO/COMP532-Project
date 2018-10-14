@@ -247,6 +247,9 @@ initialize = function() {
     map = new google.maps.Map(mapDiv, {
       center: new google.maps.LatLng(-41.273627, 172.524935),
       zoom: 5,
+	  maxZoom: 15,
+	  minZoom: 5,
+	  gestureHandling: 'greedy',
 	  mapTypeControl: false,
 	  streetViewControl: false,
 	  fullscreenControl: true,
