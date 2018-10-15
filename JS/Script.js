@@ -3,6 +3,7 @@
 var map;
 var selLayer;
 var curLayer;
+var regionLayer;
 var selLayerDiv;
 var dateCnst = "";
 var layerPolys;
@@ -10,6 +11,8 @@ var month;
 var year;
 var valueGroups = [];
 var layersHidden = true;
+var isZoomed = false;
+var selLayerNum;
 
 //change layer bar
 var nav = document.createElement("div");
@@ -96,6 +99,7 @@ slider.oninput = function(){
 
 // Set the layer (water quality test) according to the user's selection
 setLayer = function(i){
+	selLayerNum = i;
 	switch(i){
         case 0: selLayer="1fLMfcSWoNcHWxAntzKnXmNrfjfy-YSC_QbXqNcZI"; // Assign the appropriate table reference
 		$(".selectedLayer").removeClass("selectedLayer");             // Remove the highlight from previous selection
@@ -221,7 +225,6 @@ addLayer = function() {
     legend.innerHTML = content.join('');
     legend.index = 1;
     map.controls[google.maps.ControlPosition.TOP_RIGHT].push(legend);
-
 
     // Collection site click event
     google.maps.event.addListener(curLayer, 'click', function(e) {
@@ -361,7 +364,23 @@ initialize = function() {
         styleId: 2,
         templateId: 2
       }
-    });   
+    });  
+//WORK IN PROGRESS
+	// Add the layer which displays the regions
+	regionLayer = new google.maps.FusionTablesLayer({
+      map: map,
+      heatmap: { enabled: false },
+      query: {
+        select: "col7",
+        from: "1EELxO6MjbVJW6_LG-n0_xrZ9qtNYLHIQIim7iNUN",
+        where: ""
+      },
+      options: {
+        styleId: 2,
+        templateId: 2
+      }
+    });  
+	
 	sliderContainer.appendChild(sliderValue);
 	sliderContainer.appendChild(slider);
 	map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(sliderContainer);
@@ -383,20 +402,31 @@ initialize = function() {
 initialize();
 
 //hide show layers on zoom
-	//currently as test
-	google.maps.event.addListener(map, 'zoom_changed', function() { 
-		var zoomLevel = map.getZoom(); 
-		// Show a finer geometry when the map is zoomed in 
-		if (zoomLevel >= 5) { 
-			//layerPolys.setMap(map);
-		} 
-		// Show a coarser geometry when the map is zoomed out 
-		else { 
-			//layerPolys.setMap(null);          
-		} 
-	});
+//currently as test
+google.maps.event.addListener(map, 'zoom_changed', function() { 
+	var zoomLevel = map.getZoom(); 
+	// Show a finer geometry when the map is zoomed in 
+	if (zoomLevel > 6 && !isZoomed) { 
+		changeZoomLayers(true);
+	} 
+	// Show a coarser geometry when the map is zoomed out 
+	else if(zoomLevel <= 6 && isZoomed) { 
+		changeZoomLayers(false);
+	} 	
+});
+//update slider on map resize incl fullscreen
+google.maps.event.addListener(map, 'resize', function() {
+	updateSlider();
+});
 
-			
-	google.maps.event.addListener(map, 'resize', function() {
-		updateSlider();
-	});
+function changeZoomLayers(isZoomedIn){
+	if(isZoomedIn){
+		regionLayer.setMap(null);
+		isZoomed = true;
+	} else {
+		regionLayer.setMap(map);
+		isZoomed = false;
+	}
+}
+		
+	//layerPolys.setMap(null);          
