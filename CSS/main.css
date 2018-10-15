@@ -23,11 +23,16 @@ section {
 	height: 700px;
 	width: auto;
 }
+
 /*nav bar*/
 #nav {
 	width: 180px;
 	background-color:  #f7f3d1;
 	margin: 5px;
+	opacity: 0.8; 
+}
+#nav:hover {
+	opacity: 1;
 }
 #nav>span {
 	font-size: 16px;
@@ -74,6 +79,7 @@ section {
 .arrowUp:hover {
 	border-bottom: 15px solid lightblue;
 }
+
 /*slider CSS*/
 #sliderContainer {
 	width: 100%;
@@ -126,8 +132,8 @@ section {
     margin: 10px;
     font-size: 12px;
     font-family: Arial, sans-serif;
+	opacity: 0.8;
 }
-
 .color {
     border: 1px solid;
     height: 12px;
@@ -135,23 +141,18 @@ section {
     margin-right: 3px;
     float: left;
 }
-
 .red {
     background: #C00;
 }
-
 .yellow {
     background: #FF3;
 }
-
 .green {
     background: #6F0;
 }
-
 .blue {
     background: #06C;
 }
-
 .purple {
     background: #63C;
 }
