@@ -425,6 +425,10 @@ function changeZoomLayers(isZoomedIn){
 		isZoomed = true;
 	} else {
 		regionLayer.setMap(map);
+		if(curLayer!=null){
+			curLayer.setMap(null);
+			curLayer.setMap(map);
+		}
 		isZoomed = false;
 	}
 }
