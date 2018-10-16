@@ -10,6 +10,7 @@ var layerPolys;
 var month;
 var year;
 var valueGroups = [];
+var units = "";
 var layersHidden = true;
 var isZoomed = false;
 var selLayerNum;
@@ -102,52 +103,60 @@ slider.oninput = function(){
 setLayer = function(i){
 	selLayerNum = i;
 	switch(i){
-        case 0: selLayer="1fLMfcSWoNcHWxAntzKnXmNrfjfy-YSC_QbXqNcZI"; // Assign the appropriate table reference
-		$(".selectedLayer").removeClass("selectedLayer");             // Remove the highlight from previous selection
-		$('#bdisc').addClass("selectedLayer");                        // Add highlight to current selection
-        setGroups(2, 5, 12);                                          // Set the range divisions for low, medium & high
-		addLayer();                                                   // Update the map with user selections
+        case 0: selLayer="1fLMfcSWoNcHWxAntzKnXmNrfjfy-YSC_QbXqNcZI";   // Assign the appropriate table reference
+		$(".selectedLayer").removeClass("selectedLayer");               // Remove the highlight from previous selection
+		$('#bdisc').addClass("selectedLayer");                          // Add highlight to current selection
+        setGroups(2, 5, 12);                                            // Set the range divisions for low, medium & high
+        units = "mg/m<sup>3</sup>";                                                     // Set the units to be used
+		addLayer();                                                     // Update the map with user selections
 		break;
     	case 1: selLayer="1ejAYrtvIR-S7XzY7s6Qjj7d7sQu2TqLrMDTykwef";
 		$(".selectedLayer").removeClass("selectedLayer");
 		$('#drp').addClass("selectedLayer");
         setGroups(0.010, 0.020, 0.050);
+        units = "mg/m<sup>3</sup>";
 		addLayer();
     	break;
     	case 2: selLayer="1ia1bHfcAQrChqxtF9AEYz6_4MYfkegYJKDGcHZj8";
 		$(".selectedLayer").removeClass("selectedLayer");
 		$('#ecoli').addClass("selectedLayer");
         setGroups(540, 1000, 1200);
+        units = "E. coli/100 mL";
 		addLayer();
     	break;
     	case 3: selLayer="1HqqTJHr7nyNccYWFrvvozPpqb0HXKcOPYxOg8v8S";
 		$(".selectedLayer").removeClass("selectedLayer");
 		$('#nh4').addClass("selectedLayer");
         setGroups(0.03, 0.24, 1.30);
+        units = "mg NH<sub>4</sub>-N/L";
 		addLayer();
     	break;
     	case 4: selLayer="1xPnv-6ahUxikMdn23Q2hF4ZFoDGmpFqx2zsoHBKf";
 		$(".selectedLayer").removeClass("selectedLayer");
 		$('#tb').addClass("selectedLayer");
         setGroups(0.03, 0.24, 1.30);
+        units = "mg/m<sup>3</sup>";
 		addLayer();
     	break;
     	case 5: selLayer="1xEsdP3obQ3-vbR37KD7mXKSydQsfr8LQjIzpaQKI";
 		$(".selectedLayer").removeClass("selectedLayer");
 		$('#tn').addClass("selectedLayer");
         setGroups(160, 350, 750);
+        units = "mg/m<sup>3</sup>";
 		addLayer();
     	break;
     	case 6: selLayer="1teN8WRrxEDmLfZbfGgGmXrEXYBR1nWCotJUy1_Hc";
 		$(".selectedLayer").removeClass("selectedLayer");
 		$('#ton').addClass("selectedLayer");
         setGroups(0.008, 0.007, 0.005);
+        units = "mg NO<sub>3</sub>-N/L";
 		addLayer();
     	break;
     	case 7: selLayer="1Ztq6JuufyZ2Vq4UDK_i3RKv7OT9PDW0SYe035JGp";
 		$(".selectedLayer").removeClass("selectedLayer");
 		$('#turb').addClass("selectedLayer");
         setGroups(1, 2.4, 6.9);
+        units = "mg NO<sub>3</sub>-N/L";
 		addLayer();
     	break;
     }
@@ -218,7 +227,7 @@ addLayer = function() {
     var legend = document.createElement('div');
     legend.id = 'legend';
     var content = [];
-    content.push('<h3>Attribute Values</h3>');
+    content.push('<h3>Values ('+units+')</h3>');
     content.push('<p><div class="color blue"></div>0 - '+valueGroups[0]+'</p>');
     content.push('<p><div class="color green"></div>'+valueGroups[0]+' - '+valueGroups[1]+'</p>');
     content.push('<p><div class="color yellow"></div>'+valueGroups[1]+' - '+valueGroups[2]+'</p>');
