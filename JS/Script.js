@@ -143,11 +143,11 @@ addLayer = function() {
     google.maps.event.addListener(curLayer, 'click', function(e) {
 
         // Add contents to the InfoWindow
-        e.infoWindowHtml = "<div style=\" width: 650px; height: 400px; overflow: auto\">"+
-            "<h2 style=\"padding-top: 15px; padding-left: 20px;\"><b>"+ e.row['SiteName'].value + "</b></h2>" +
-            "<div style=\"padding-left: 30px; font-size: 16px;\">" + e.row['Region'].value + "<br>Site ID: " + e.row['LawaID'].value + "</div>" +
-            "<div style=\"padding-left: 30px; font-size: 12px;\"><b>Longitude:</b>" + e.row['Longitude'].value + "<b> Latitude:</b>" + e.row['Latitude'].value + "</div>" +
-            "<div style=\"padding-top: 20px;\"><img src=\"http://occupodo.ddns.net:3000/?minIn=0&maxIn=10&originalValue=" + e.row['OriginalValue'].value + "&average=9&tubeColor=4&previousAverage=1&year="+ e.row['DateTime'].value +"&percentile=89th\">" +
+        e.infoWindowHtml = "<div style=\" width: 650px; height: 350px; overflow: auto\">"+
+            "<h2 style=\"padding-top: 10px; padding-left: 20px;\"><b>"+ e.row['SiteName'].value + "</b></h2>" +
+            "<div style=\"padding-left: 30px; padding-bottom: 5px; font-size: 16px;\"><i>" + e.row['Region'].value + "</i><br>Site ID: " + e.row['LawaID'].value + "</div>" +
+            "<div style=\"padding-left: 30px; padding-top:5px; font-size: 10px;\"><b>Longitude:</b>" + e.row['Longitude'].value + " <br><b>Latitude:</b>" + e.row['Latitude'].value + "</div>" +
+            "<div style=\"padding-top: 15px;\"><img src=\"http://occupodo.ddns.net:3000/?minIn=0&maxIn=10&originalValue=" + e.row['OriginalValue'].value + "&average=9&tubeColor=4&previousAverage=1&year="+ e.row['DateTime'].value +"&percentile=89th\">" +
             "<img src=\"http://occupodo.ddns.net:3000/?minIn=0&maxIn=10&originalValue=9&average=9&tubeColor=2&previousAverage=1&year=2007&percentile=99th\" height=\"170\" width=\"120\">" +
             "<img src=\"http://occupodo.ddns.net:3000/?minIn=0&maxIn=10&originalValue=2.13&average=5&tubeColor=1&previousAverage=9&year=2008&percentile=17th\" height=\"170\" width=\"120\">" +
             "<img src=\"http://occupodo.ddns.net:3000/?minIn=0&maxIn=10&originalValue=5.7&average=7&tubeColor=3&previousAverage=5&year=2009&percentile=50th\" height=\"170\" width=\"120\">" +
