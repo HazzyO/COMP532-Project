@@ -76,11 +76,12 @@ updateSlider = function(){
 		var month = ((slider.value-1)%12)+1;
 		var year = 2007+Math.floor((slider.value-1)/12);
 		sliderValue.innerHTML = months[month-1]+" "+year;
+		dateCnst = "'DateTime' >= '"+month+"/01/"+year+"' AND 'DateTime' <= '"+month+"/31/"+year+"'";
 		curLayer.setOptions({
 			query: {
 				select: "Latitude",
 				from: selLayer,
-				where: "'DateTime' >= '"+month+"/01/"+year+"' AND 'DateTime' <= '"+month+"/31/"+year+"'"
+				where: dateCnst
 			}
 		});
 		var width = sliderContainer.offsetWidth;
@@ -371,13 +372,13 @@ initialize = function() {
       map: map,
       heatmap: { enabled: false },
       query: {
-        select: "col7",
+        select: "geometry",
         from: "1EELxO6MjbVJW6_LG-n0_xrZ9qtNYLHIQIim7iNUN",
         where: ""
       },
       options: {
-        styleId: 2,
-        templateId: 2
+        styleId: 3,
+        templateId: 3
       }
     });  
 	
