@@ -128,10 +128,10 @@ section {
 /* Style for the legend */
 #legend {
     background: #FFF;
-    padding: 10px;
-    margin: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin: 10px 10px 75px 10px;
     font-size: 12px;
-    font-family: Arial, sans-serif;
 	opacity: 0.8;
 }
 .color {
@@ -152,7 +152,4 @@ section {
 }
 .blue {
     background: #06C;
-}
-.purple {
-    background: #63C;
 }

@@ -225,7 +225,7 @@ addLayer = function() {
     content.push('<p><div class="color red"></div>'+valueGroups[2]+'+</p>');
     legend.innerHTML = content.join('');
     legend.index = 1;
-    map.controls[google.maps.ControlPosition.TOP_RIGHT].push(legend);
+    map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(legend);
 
     // Collection site click event
     google.maps.event.addListener(curLayer, 'click', function(e) {
