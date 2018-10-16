@@ -23,48 +23,79 @@ section {
 	height: 700px;
 	width: auto;
 }
+
 /*nav bar*/
-#navbar {
-	width: 250px;
-	float: right;
+#nav {
+	width: 180px;
 	background-color:  #f7f3d1;
+	margin: 10px;
+	opacity: 0.8; 
 }
-#navbar>div, h2 {
+#nav:hover {
+	opacity: 1;
+}
+#nav>span {
+	font-size: 16px;
+	font-weight: bold;
+}
+#nav>div {
 	padding-left: 10px;
 	padding-right: 10px;
+	font-size: 14px;
 	cursor: pointer;
 }
-/*search bar*/
-#searchMap{
-	background-color: aliceblue;
-    padding: 5px;
-    width: auto;
-}
-#seachMapInput {
-	width: 160px;
-}
-.layer:hover {
-	background-color: blue;
+.hideLayers {
+	display:none;
 }
 .selectedLayer {
 	background-color: gold;
+	display: block;
 }
+.layer:hover {
+	background-color: lightblue;
+}
+.layer:active {
+	background-color: lightgreen;
+	color: white;
+}
+.arrowUp, .arrowDown{
+	float: right;
+	width: 0; 
+	height: 0;
+}  
+.arrowDown { 
+	border-left: 15px solid transparent;
+	border-right: 15px solid transparent;
+	border-top: 15px solid green;
+}
+.arrowUp {
+	border-left: 15px solid transparent;
+	border-right: 15px solid transparent;
+	border-bottom: 15px solid red;
+}
+.arrowDown:hover {
+	border-top: 15px solid orange;
+}
+.arrowUp:hover {
+	border-bottom: 15px solid orange;
+}
+
 /*slider CSS*/
-.slidecontainer {
-    width: 100%;
+#sliderContainer {
+	width: 100%;
+	margin: 25px;
 }
 .slider {
     -webkit-appearance: none;  
     appearance: none;
     width: 100%; 
     height: 25px; 
-    background: #d3d3d3; 
+    background-color: white; 
     outline: none; 
     opacity: 0.7; 
     -webkit-transition: .2s; 
     transition: opacity .2s;
 }
-
 .slider:hover {
     opacity: 1; /* Fully shown on mouse-over */
 }
@@ -78,10 +109,47 @@ section {
     background: #4CAF50; /* Green background */
     cursor: pointer; /* Cursor on hover */
 }
-
 .slider::-moz-range-thumb {
     width: 25px; /* Set a specific slider handle width */
     height: 25px; /* Slider handle height */
     background: #4CAF50; /* Green background */
     cursor: pointer; /* Cursor on hover */
 } 
+#sliderValue {
+	position: absolute;
+	left: 0%;
+	bottom: 30px;
+	background-color:hsl(39, 90%, 80%);
+	border-radius: 3px;
+	padding: 5px;
+	width: 50px;
+}
+
+/* Style for the legend */
+#legend {
+    background: #FFF;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin: 10px 10px 75px 10px;
+    font-size: 12px;
+	opacity: 0.8;
+}
+.color {
+    border: 1px solid;
+    height: 12px;
+    width: 12px;
+    margin-right: 3px;
+    float: left;
+}
+.red {
+    background: #C00;
+}
+.yellow {
+    background: #FF3;
+}
+.green {
+    background: #6F0;
+}
+.blue {
+    background: #06C;
+}

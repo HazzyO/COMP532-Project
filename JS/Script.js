@@ -3,86 +3,165 @@
 var map;
 var selLayer;
 var curLayer;
+var regionLayer;
+var selLayerDiv;
 var dateCnst = "";
 var layerPolys;
 var month;
 var year;
 var valueGroups = [];
+var units = "";
+var layersHidden = true;
+var isZoomed = false;
+var selLayerNum;
+
+//change layer bar
+var nav = document.createElement("div");
+nav.id = "nav";
+var layerText = document.createElement("span");
+layerText.appendChild(document.createTextNode("Layer: "));
+nav.appendChild(layerText);
+
+var arrow = (document.createElement("span"));
+arrow.className = "arrowDown";
+arrow.onclick = function(){
+	if(layersHidden){
+		$(".hideLayers").removeClass("hideLayers");
+		arrow.className = "arrowUp";
+		layersHidden = false;
+	} else {
+		$(".layer").addClass("hideLayers");
+		arrow.className = "arrowDown";
+		layersHidden = true;
+	}
+}
+
+//add layer nav items to map
+var layerIds = ["bdisc","drp","ecoli","nh4","tb","tn","ton","turb"];
+var layerText = ["Black disc visibility","Dissolved reactive Phosphorus","E. coli","Ammoniacal Nitrogen","Total Phosphorus","Total Nitrogen","Total Oxidised Nitrogen","Turbidity"];
+
+nav.appendChild(arrow);
+
+for(var i = 0; i < 8; i++){
+	var tmp = document.createElement("div");
+	tmp.id = layerIds[i];
+	tmp.appendChild(document.createTextNode(layerText[i]));
+	tmp.setAttribute('onclick', 'setLayer('+i+')');
+	$(tmp).addClass("layer");
+	$(tmp).addClass("hideLayers");
+	nav.appendChild(tmp);
+}
+
 //slider
-var slider = document.getElementById("myRange");
+var slider = document.createElement("input");
+var sliderValue = document.createElement("output");
+var sliderContainer = document.createElement("div");
+
+slider.setAttribute("type","range");
+slider.setAttribute("min","1");
+slider.setAttribute("max","120");
+slider.setAttribute("value","120");
+slider.className = "slider";
+slider.id = "slide";
+slider.oninput = function(){
+	updateSlider();
+}
+sliderValue.setAttribute("for","slide");
+sliderValue.id = "sliderValue";
+sliderContainer.id = "sliderContainer";
 
 var months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
 	
 updateSlider = function(){
-	var month = ((slider.value-1)%12)+1;
-	var year = 2007+Math.floor((slider.value-1)/12);
-    document.getElementById("sliderValue").innerHTML = months[month-1]+" "+year;
-	curLayer.setOptions({
-		query: {
-			select: "Latitude",
-			from: selLayer,
-			where: "'DateTime' >= '"+month+"/01/"+year+"' AND 'DateTime' <= '"+month+"/31/"+year+"'"
+	if(curLayer!=null){
+		var month = ((slider.value-1)%12)+1;
+		var year = 2007+Math.floor((slider.value-1)/12);
+		sliderValue.innerHTML = months[month-1]+" "+year;
+		dateCnst = "'DateTime' >= '"+month+"/01/"+year+"' AND 'DateTime' <= '"+month+"/31/"+year+"'";
+		curLayer.setOptions({
+			query: {
+				select: "Latitude",
+				from: selLayer,
+				where: dateCnst
+			}
+		});
+		var width = sliderContainer.offsetWidth;
+		var tmp = (slider.value-1)/119;
+		if(width*tmp-25<0){
+			tmp=(25/width);
+		} if(width*tmp >width-30){
+			tmp = (width-30)/width;
 		}
-	});
-};
+		$(sliderValue).css('left','calc('+tmp*100+'% - 25px)');
+	}
+}
 slider.oninput = function(){
 	updateSlider();
-};
+}
 
-// Set the layer (water quality test) according to the user's selection (RHS of main page)
+// Set the layer (water quality test) according to the user's selection
 setLayer = function(i){
+	selLayerNum = i;
 	switch(i){
-        case 0: selLayer="1fLMfcSWoNcHWxAntzKnXmNrfjfy-YSC_QbXqNcZI"; // Assign the appropriate table reference
-		$(".selectedLayer").removeClass("selectedLayer");             // Remove the highlight from previous selection
-		$('#bdisc').addClass("selectedLayer");                        // Add highlight to current selection
-        setGroups(2, 5, 12);                                          // Set the range divisions for low, medium & high
-		addLayer();                                                   // Update the map with user selections
-    	break;
+        case 0: selLayer="1fLMfcSWoNcHWxAntzKnXmNrfjfy-YSC_QbXqNcZI";   // Assign the appropriate table reference
+		$(".selectedLayer").removeClass("selectedLayer");               // Remove the highlight from previous selection
+		$('#bdisc').addClass("selectedLayer");                          // Add highlight to current selection
+        setGroups(2, 5, 12);                                            // Set the range divisions for low, medium & high
+        units = "mg/m<sup>3</sup>";                                                     // Set the units to be used
+		addLayer();                                                     // Update the map with user selections
+		break;
     	case 1: selLayer="1ejAYrtvIR-S7XzY7s6Qjj7d7sQu2TqLrMDTykwef";
 		$(".selectedLayer").removeClass("selectedLayer");
 		$('#drp').addClass("selectedLayer");
         setGroups(0.010, 0.020, 0.050);
+        units = "mg/m<sup>3</sup>";
 		addLayer();
     	break;
     	case 2: selLayer="1ia1bHfcAQrChqxtF9AEYz6_4MYfkegYJKDGcHZj8";
 		$(".selectedLayer").removeClass("selectedLayer");
 		$('#ecoli').addClass("selectedLayer");
         setGroups(540, 1000, 1200);
+        units = "E. coli/100 mL";
 		addLayer();
     	break;
     	case 3: selLayer="1HqqTJHr7nyNccYWFrvvozPpqb0HXKcOPYxOg8v8S";
 		$(".selectedLayer").removeClass("selectedLayer");
 		$('#nh4').addClass("selectedLayer");
         setGroups(0.03, 0.24, 1.30);
+        units = "mg NH<sub>4</sub>-N/L";
 		addLayer();
     	break;
     	case 4: selLayer="1xPnv-6ahUxikMdn23Q2hF4ZFoDGmpFqx2zsoHBKf";
 		$(".selectedLayer").removeClass("selectedLayer");
 		$('#tb').addClass("selectedLayer");
         setGroups(0.03, 0.24, 1.30);
+        units = "mg/m<sup>3</sup>";
 		addLayer();
     	break;
     	case 5: selLayer="1xEsdP3obQ3-vbR37KD7mXKSydQsfr8LQjIzpaQKI";
 		$(".selectedLayer").removeClass("selectedLayer");
 		$('#tn').addClass("selectedLayer");
         setGroups(160, 350, 750);
+        units = "mg/m<sup>3</sup>";
 		addLayer();
     	break;
     	case 6: selLayer="1teN8WRrxEDmLfZbfGgGmXrEXYBR1nWCotJUy1_Hc";
 		$(".selectedLayer").removeClass("selectedLayer");
 		$('#ton').addClass("selectedLayer");
         setGroups(0.008, 0.007, 0.005);
+        units = "mg NO<sub>3</sub>-N/L";
 		addLayer();
     	break;
     	case 7: selLayer="1Ztq6JuufyZ2Vq4UDK_i3RKv7OT9PDW0SYe035JGp";
 		$(".selectedLayer").removeClass("selectedLayer");
 		$('#turb').addClass("selectedLayer");
         setGroups(1, 2.4, 6.9);
+        units = "mg NO<sub>3</sub>-N/L";
 		addLayer();
     	break;
     }
     updateSlider();
-};
+}
 
 // Marker divisions for assigning colours
 function setGroups(a, b, c){
@@ -97,7 +176,6 @@ addLayer = function() {
 	if(curLayer!=null){
 		curLayer.setMap(null);
 	}
-
 	// Add user's selected layer
 	curLayer = new google.maps.FusionTablesLayer({
       map: map,
@@ -138,6 +216,25 @@ addLayer = function() {
           }
       ]
     });
+    
+    // Create the legend and display on the map
+    var tmp = document.getElementById("legend");
+    if(document.body.contains(tmp))
+    {
+        tmp.parentNode.removeChild(tmp);
+    }
+    
+    var legend = document.createElement('div');
+    legend.id = 'legend';
+    var content = [];
+    content.push('<h3>Values ('+units+')</h3>');
+    content.push('<p><div class="color blue"></div>0 - '+valueGroups[0]+'</p>');
+    content.push('<p><div class="color green"></div>'+valueGroups[0]+' - '+valueGroups[1]+'</p>');
+    content.push('<p><div class="color yellow"></div>'+valueGroups[1]+' - '+valueGroups[2]+'</p>');
+    content.push('<p><div class="color red"></div>'+valueGroups[2]+'+</p>');
+    legend.innerHTML = content.join('');
+    legend.index = 1;
+    map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(legend);
 
     // Collection site click event
     google.maps.event.addListener(curLayer, 'click', function(e) {
@@ -154,16 +251,24 @@ addLayer = function() {
             "<img src=\"http://occupodo.ddns.net:3000/?minIn=0&maxIn=10&originalValue=5.7&average=7&tubeColor=0&previousAverage=7&year=2009&percentile=50th\" height=\"170\" width=\"120\"> "+
             "</div></div>";
     });
-};
+}
 
 // Create the underlying map
 initialize = function() {
     var mapDiv = document.getElementById('map');
-	setLayer(0);
        
     map = new google.maps.Map(mapDiv, {
-      center: new google.maps.LatLng(-40.173627, 172.524935),
+      center: new google.maps.LatLng(-41.273627, 172.524935),
       zoom: 5,
+	  maxZoom: 15,
+	  minZoom: 5,
+	  gestureHandling: 'greedy',
+	  mapTypeControl: false,
+	  streetViewControl: false,
+	  fullscreenControl: true,
+	  zoomControlOptions: {
+		  position: google.maps.ControlPosition.RIGHT_TOP
+	  },
       styles: [
           {
             elementType: 'geometry',
@@ -269,28 +374,73 @@ initialize = function() {
         styleId: 2,
         templateId: 2
       }
-    });
-
-    addLayer();
-};
-
+    });  
+//WORK IN PROGRESS
+	// Add the layer which displays the regions
+	regionLayer = new google.maps.FusionTablesLayer({
+      map: map,
+      heatmap: { enabled: false },
+      query: {
+        select: "geometry",
+        from: "1EELxO6MjbVJW6_LG-n0_xrZ9qtNYLHIQIim7iNUN",
+        where: ""
+      },
+      options: {
+        styleId: 3,
+        templateId: 3
+      }
+    });  
+	
+	sliderContainer.appendChild(sliderValue);
+	sliderContainer.appendChild(slider);
+	map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(sliderContainer);
+	map.controls[google.maps.ControlPosition.TOP_LEFT].push(nav);
+	
+	google.maps.event.addListenerOnce(map, 'idle', function() {
+		var checkLoad = window.setInterval(check, 1000);
+	
+		function check(){
+			if(!$(".selectedLayer").length){
+				updateSlider();
+				setLayer(0);
+				clearInterval(checkLoad);
+			}
+		}
+	});
+}
 //initilises the map
 initialize();
-
-
 
 //hide show layers on zoom
 //currently as test
 google.maps.event.addListener(map, 'zoom_changed', function() { 
-    var zoomLevel = map.getZoom(); 
-    // Show a finer geometry when the map is zoomed in 
-    if (zoomLevel >= 5) { 
-          layerPolys.setMap(map);
-    } 
-    // Show a coarser geometry when the map is zoomed out 
-     else { 
-          layerPolys.setMap(null);          
-    } 
+	var zoomLevel = map.getZoom(); 
+	// Show a finer geometry when the map is zoomed in 
+	if (zoomLevel > 6 && !isZoomed) { 
+		changeZoomLayers(true);
+	} 
+	// Show a coarser geometry when the map is zoomed out 
+	else if(zoomLevel <= 6 && isZoomed) { 
+		changeZoomLayers(false);
+	} 	
+});
+//update slider on map resize incl fullscreen
+google.maps.event.addListener(map, 'resize', function() {
+	updateSlider();
 });
 
-updateSlider();
+function changeZoomLayers(isZoomedIn){
+	if(isZoomedIn){
+		regionLayer.setMap(null);
+		isZoomed = true;
+	} else {
+		regionLayer.setMap(map);
+		if(curLayer!=null){
+			curLayer.setMap(null);
+			curLayer.setMap(map);
+		}
+		isZoomed = false;
+	}
+}
+		
+	//layerPolys.setMap(null);          
