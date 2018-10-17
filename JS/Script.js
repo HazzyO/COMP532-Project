@@ -11,6 +11,7 @@ var units = "";
 var layersHidden = true;
 var isZoomed = false;
 var selLayerNum;
+var style = [];
 
 //change layer bar
 var nav = document.createElement("div");
@@ -67,7 +68,7 @@ sliderValue.setAttribute("for","slide");
 sliderValue.id = "sliderValue";
 sliderContainer.id = "sliderContainer";
 
-var months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+var months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
 	
 updateSlider = function(){
 	if(curLayer!=null){
@@ -90,6 +91,80 @@ updateSlider = function(){
 			tmp = (width-30)/width;
 		}
 		$(sliderValue).css('left','calc('+tmp*100+'% - 25px)');
+		getData();
+	}
+}
+function getData() {
+	//update region styles
+	var opts = {sendMethod: 'auto'};
+	var query = new google.visualization.Query('http://www.google.com/fusiontables/gvizdata', opts);
+	query.setQuery("SELECT 'col2', 'OriginalValue' FROM "+selLayer+" WHERE "+dateCnst);
+	query.send(handleQueryResponse);
+}
+
+function region(_name, _value){
+	this.name = _name,
+	this.value = _value,
+	this.count = 1
+};
+
+function handleQueryResponse(response){
+	if(!response.isError()){
+		var regions = [];
+		var data = response.getDataTable();
+		var rows = data.getNumberOfRows();
+		for(var i = 0; i < rows; i++){
+			var contains = false;
+			var x = 0;
+			while((x < regions.length) && !contains){
+				if(regions[x].name == data.getValue(i,0)){
+					regions[x].value += data.getValue(i,1);
+					regions[x].count++;
+					contains = true;
+				}
+				x++;
+			}
+			if(!contains){
+				regions.push(new region(data.getValue(i,0),data.getValue(i,1)));
+			}
+		}
+		var red;
+		var yellow;
+		var green;
+		var blue;
+		for(var n = 0; n < regions.length; n++){
+			var avg = (regions[n].value/regions[n].count);
+			if(avg > valueGroups[2]){
+				red+=",'"+regions[n].name+"'";
+				} else if((avg <= valueGroups[2])&& (avg > valueGroups[1])){
+					yellow+=",'"+regions[n].name+"'";
+					} else if((avg <= valueGroups[2])&&(avg > valueGroups[1])){
+						green+=",'"+regions[n].name+"'";
+						} else{
+							blue+=",'"+regions[n].name+"'";
+						}
+			}
+
+			style.push({where: "'regNames' IN('nores'"+red+")",
+								polygonOptions:{
+									fillColor: "#ff2d00"
+								}
+							});
+			style.push({where: "'regNames' IN('nores'"+yellow+")",
+								polygonOptions:{
+									fillColor: "#fbff00"
+								}
+							});
+			style.push({where: "'regNames' IN('nores'"+green+")",
+								polygonOptions:{
+									fillColor: "#42d004"
+								}
+							});
+			style.push({where: "'regNames' IN('nores'"+blue+")",
+								polygonOptions:{
+									fillColor: "#0442d0"
+								}
+							});
 	}
 }
 slider.oninput = function(){
@@ -177,6 +252,7 @@ addLayer = function() {
 	curLayer = new google.maps.FusionTablesLayer({
       map: map,
       heatmap: { enabled: false },
+      suppressInfoWindows: true,
       query: {
         select: "Latitude",
         from: selLayer,
@@ -235,7 +311,7 @@ addLayer = function() {
         map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(legend);
     }
 
-    // Collection site click event
+    // Dirty hard coded values, will add more later
     google.maps.event.addListener(curLayer, 'click', function(e) {
 
         var monthAverages = {minus4Av: 458.96, minus3Av: 766.89, minus2Av: 548.10, minus1Av: 400.65, minus0Av: 626.20};
@@ -299,7 +375,7 @@ addLayer = function() {
             map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(infoGraphic);
         }
 
-        // Prevent the popup window from showing 
+        // Prevent the popup window from showing
         e.stop();
     });
 }
@@ -434,6 +510,7 @@ initialize = function() {
     layerPolys = new google.maps.FusionTablesLayer({
       map: map,
       heatmap: { enabled: false },
+	  suppressInfoWindows: true,
       query: {
         select: "col3",
         from: "1ImJBP7m2013jjmbLg6Hm0oxe4WwPizbbAr-6_GpT",
@@ -444,21 +521,21 @@ initialize = function() {
         templateId: 2
       }
     });
-//WORK IN PROGRESS
-	// Add the layer which displays the regions
+
+    });
+
 	regionLayer = new google.maps.FusionTablesLayer({
-      map: map,
-      heatmap: { enabled: false },
-      query: {
-        select: "geometry",
-        from: "1EELxO6MjbVJW6_LG-n0_xrZ9qtNYLHIQIim7iNUN",
-        where: ""
-      },
-      options: {
-        styleId: 3,
-        templateId: 3
+		heatmap: { enabled: false },
+		query: {
+			select: 'geometry',
+			from: "1EELxO6MjbVJW6_LG-n0_xrZ9qtNYLHIQIim7iNUN",
+		},
+		map: map,
+		options: {
+			styleId: 2,
+			templateId: 2
       }
-    });  
+	});
 	
 	sliderContainer.appendChild(sliderValue);
 	sliderContainer.appendChild(slider);
@@ -467,7 +544,7 @@ initialize = function() {
 	
 	google.maps.event.addListenerOnce(map, 'idle', function() {
 		var checkLoad = window.setInterval(check, 1000);
-	
+
 		function check(){
 			if(!$(".selectedLayer").length){
 				updateSlider();
@@ -485,11 +562,11 @@ initialize();
 google.maps.event.addListener(map, 'zoom_changed', function() { 
 	var zoomLevel = map.getZoom(); 
 	// Show a finer geometry when the map is zoomed in 
-	if (zoomLevel > 6 && !isZoomed) { 
+	if (zoomLevel > 8 && !isZoomed) {
 		changeZoomLayers(true);
 	} 
 	// Show a coarser geometry when the map is zoomed out 
-	else if(zoomLevel <= 6 && isZoomed) { 
+	else if(zoomLevel <= 8 && isZoomed) {
 		changeZoomLayers(false);
 	} 	
 });
@@ -511,5 +588,5 @@ function changeZoomLayers(isZoomedIn){
 		isZoomed = false;
 	}
 }
-		
-// layerPolys.setMap(null);
+
+google.charts.load('current', {callback: getData});
