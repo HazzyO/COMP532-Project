@@ -4,11 +4,8 @@ var map;
 var selLayer;
 var curLayer;
 var regionLayer;
-var selLayerDiv;
 var dateCnst = "";
 var layerPolys;
-var month;
-var year;
 var valueGroups = [];
 var units = "";
 var layersHidden = true;
@@ -219,37 +216,72 @@ addLayer = function() {
     
     // Create the legend and display on the map
     var tmp = document.getElementById("legend");
-    if(document.body.contains(tmp))
-    {
-        tmp.parentNode.removeChild(tmp);
-    }
-    
-    var legend = document.createElement('div');
-    legend.id = 'legend';
+
     var content = [];
     content.push('<h3>Values ('+units+')</h3>');
     content.push('<p><div class="color blue"></div>0 - '+valueGroups[0]+'</p>');
     content.push('<p><div class="color green"></div>'+valueGroups[0]+' - '+valueGroups[1]+'</p>');
     content.push('<p><div class="color yellow"></div>'+valueGroups[1]+' - '+valueGroups[2]+'</p>');
     content.push('<p><div class="color red"></div>'+valueGroups[2]+'+</p>');
-    legend.innerHTML = content.join('');
-    legend.index = 1;
-    map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(legend);
+
+    if(document.body.contains(tmp))
+    {
+        tmp.innerHTML = content.join('');
+    }else{
+        var legend = document.createElement('div');
+        legend.id = 'legend';
+        legend.innerHTML = content.join('');
+        legend.index = 1;
+        map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(legend);
+    }
 
     // Collection site click event
     google.maps.event.addListener(curLayer, 'click', function(e) {
 
-        // Add contents to the InfoWindow
-        e.infoWindowHtml = "<div style=\" width: 650px; height: 350px; overflow: auto\">"+
-            "<h2 style=\"padding-top: 10px; padding-left: 20px;\"><b>"+ e.row['SiteName'].value + "</b></h2>" +
-            "<div style=\"padding-left: 30px; padding-bottom: 5px; font-size: 16px;\"><i>" + e.row['Region'].value + "</i><br>Site ID: " + e.row['LawaID'].value + "</div>" +
-            "<div style=\"padding-left: 30px; padding-top:5px; font-size: 10px;\"><b>Longitude:</b>" + e.row['Longitude'].value + " <br><b>Latitude:</b>" + e.row['Latitude'].value + "</div>" +
-            "<div style=\"padding-top: 15px;\"><img src=\"http://occupodo.ddns.net:3000/?minIn=0&maxIn=10&originalValue=" + e.row['OriginalValue'].value + "&average=9&tubeColor=4&previousAverage=1&year="+ e.row['DateTime'].value +"&percentile=89th\">" +
-            "<img src=\"http://occupodo.ddns.net:3000/?minIn=0&maxIn=10&originalValue=9&average=9&tubeColor=2&previousAverage=1&year=2007&percentile=99th\" height=\"170\" width=\"120\">" +
-            "<img src=\"http://occupodo.ddns.net:3000/?minIn=0&maxIn=10&originalValue=2.13&average=5&tubeColor=1&previousAverage=9&year=2008&percentile=17th\" height=\"170\" width=\"120\">" +
-            "<img src=\"http://occupodo.ddns.net:3000/?minIn=0&maxIn=10&originalValue=5.7&average=7&tubeColor=3&previousAverage=5&year=2009&percentile=50th\" height=\"170\" width=\"120\">" +
-            "<img src=\"http://occupodo.ddns.net:3000/?minIn=0&maxIn=10&originalValue=5.7&average=7&tubeColor=0&previousAverage=7&year=2009&percentile=50th\" height=\"170\" width=\"120\"> "+
-            "</div></div>";
+        var content = [];
+        content.push('<h2 style=padding-top: 10px; padding-left: 20px; ><b>'+ e.row['SiteName'].value +'</b></h2>');
+        content.push('<div style=padding-left: 30px; padding-bottom: 5px; font-size: 16px;><i>'
+            + e.row['Region'].value + '</i><br>Site ID: ' + e.row['LawaID'].value + '</div>');
+        content.push('<div style=padding-left: 30px; padding-top:5px; font-size: 10px;><b>Longitude:</b>'
+            + e.row['Longitude'].value + ' <br><b>Latitude:</b>' + e.row['Latitude'].value + '</div>');
+        content.push('<div style=padding-top: 15px;>' +
+            '<img src="http://occupodo.ddns.net:3000/?minIn=0&maxIn=10&originalValue='
+                + e.row['OriginalValue'].value + '&average=9&tubeColor=4&previousAverage=1&year='+ e.row['DateTime'].value +'&percentile=89th">' +
+            '<img src="http://occupodo.ddns.net:3000/?minIn=0&maxIn=10&originalValue='
+                + e.row['OriginalValue'].value + '&average=3&tubeColor=2&previousAverage=5&year='+ e.row['DateTime'].value +'&percentile=66th">');
+
+
+        // content.push('<div style=padding-top: 15px;><img src="http://occupodo.ddns.net:3000/?minIn=0&maxIn=10&originalValue='
+        //     + e.row['OriginalValue'].value + '&average=3&tubeColor=2&previousAverage=5&year='+ e.row['DateTime'].value +'&percentile=66th">');
+        // content.push('<div style=padding-top: 15px;><img src="http://occupodo.ddns.net:3000/?minIn=0&maxIn=10&originalValue='
+        //     + e.row['OriginalValue'].value + '&average=6&tubeColor=3&previousAverage=6&year='+ e.row['DateTime'].value +'&percentile=38th">');
+        // content.push('<div style=padding-top: 15px;><img src="http://occupodo.ddns.net:3000/?minIn=0&maxIn=10&originalValue='
+        //     + e.row['OriginalValue'].value + '&average=4&tubeColor=1&previousAverage=3&year='+ e.row['DateTime'].value +'&percentile=75th">');
+
+
+        var infoG = document.getElementById('infographic');
+        if(document.body.contains(infoG)) {
+            // Update the existing info graphic window
+            infoG.innerHTML = content.join('');
+        }else{
+            // Create the info graphic window
+            var infoGraphic = document.createElement('div');
+            infoGraphic.id = 'infographic';
+            infoGraphic.innerHTML = content.join('');
+            infoGraphic.index = 1;
+            map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(infoGraphic);
+        }
+
+        // e.infoWindowHtml = "<div style=\" width: 650px; height: 350px; overflow: auto\">"+
+        //     "<h2 style=\"padding-top: 10px; padding-left: 20px;\"><b>"+ e.row['SiteName'].value + "</b></h2>" +
+        //     "<div style=\"padding-left: 30px; padding-bottom: 5px; font-size: 16px;\"><i>" + e.row['Region'].value + "</i><br>Site ID: " + e.row['LawaID'].value + "</div>" +
+        //     "<div style=\"padding-left: 30px; padding-top:5px; font-size: 10px;\"><b>Longitude:</b>" + e.row['Longitude'].value + " <br><b>Latitude:</b>" + e.row['Latitude'].value + "</div>" +
+        //     "<div style=\"padding-top: 15px;\"><img src=\"http://occupodo.ddns.net:3000/?minIn=0&maxIn=10&originalValue=" + e.row['OriginalValue'].value + "&average=9&tubeColor=4&previousAverage=1&year="+ e.row['DateTime'].value +"&percentile=89th\">" +
+        //     "<img src=\"http://occupodo.ddns.net:3000/?minIn=0&maxIn=10&originalValue=9&average=9&tubeColor=2&previousAverage=1&year=2007&percentile=99th\" height=\"170\" width=\"120\">" +
+        //     "<img src=\"http://occupodo.ddns.net:3000/?minIn=0&maxIn=10&originalValue=2.13&average=5&tubeColor=1&previousAverage=9&year=2008&percentile=17th\" height=\"170\" width=\"120\">" +
+        //     "<img src=\"http://occupodo.ddns.net:3000/?minIn=0&maxIn=10&originalValue=5.7&average=7&tubeColor=3&previousAverage=5&year=2009&percentile=50th\" height=\"170\" width=\"120\">" +
+        //     "<img src=\"http://occupodo.ddns.net:3000/?minIn=0&maxIn=10&originalValue=5.7&average=7&tubeColor=0&previousAverage=7&year=2009&percentile=50th\" height=\"170\" width=\"120\"> "+
+        //     "</div></div>";
     });
 }
 
@@ -408,7 +440,7 @@ initialize = function() {
 		}
 	});
 }
-//initilises the map
+// initialises the map
 initialize();
 
 //hide show layers on zoom
@@ -443,4 +475,4 @@ function changeZoomLayers(isZoomedIn){
 	}
 }
 		
-	//layerPolys.setMap(null);          
+// layerPolys.setMap(null);
