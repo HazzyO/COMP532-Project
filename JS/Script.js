@@ -128,10 +128,10 @@ function handleQueryResponse(response){
 				regions.push(new region(data.getValue(i,0),data.getValue(i,1)));
 			}
 		}
-		var red = "";
-		var yellow = "";
-		var green = "";
-		var blue = "";
+		var red;
+		var yellow;
+		var green;
+		var blue;
 		for(var n = 0; n < regions.length; n++){
 			var avg = (regions[n].value/regions[n].count);
 			if(avg > valueGroups[2]){
@@ -144,27 +144,27 @@ function handleQueryResponse(response){
 							blue+=",'"+regions[n].name+"'";
 						}
 			}
-			style.push({where: "'regName' IN('nores'"+red+")",
+			
+			style.push({where: "'regNames' IN('nores'"+red+")",
 								polygonOptions:{
-									fillColor: "#ff0000"
+									fillColor: "#ff2d00"
 								}
 							});
-			style.push({where: "'regName' IN('nores'"+yellow+")",
+			style.push({where: "'regNames' IN('nores'"+yellow+")",
 								polygonOptions:{
-									fillColor: "#ffff00"
+									fillColor: "#fbff00"
 								}
 							});
-			style.push({where: "'regName' IN('nores'"+green+")",
+			style.push({where: "'regNames' IN('nores'"+green+")",
 								polygonOptions:{
-									fillColor: "#39e600"
+									fillColor: "#42d004"
 								}
 							});
-			style.push({where: "'regName' IN('nores'"+blue+")",
+			style.push({where: "'regNames' IN('nores'"+blue+")",
 								polygonOptions:{
-									fillColor: "#0099ff"
+									fillColor: "#0442d0"
 								}
-							});		
-			regionLayer.set("styles",style);
+							});						
 	}
 }
 slider.oninput = function(){
@@ -288,7 +288,7 @@ addLayer = function() {
               }
           }
       ]
-    });	 
+    });
     
     // Create the legend and display on the map
     var tmp = document.getElementById("legend");
@@ -484,19 +484,19 @@ initialize = function() {
         templateId: 2
       }
     });
-
+	
 	regionLayer = new google.maps.FusionTablesLayer({
 		heatmap: { enabled: false },
 		query: {
-			select: "geometry, name",
+			select: 'geometry',
 			from: "1EELxO6MjbVJW6_LG-n0_xrZ9qtNYLHIQIim7iNUN",
-			where: ""
 		},
+		map: map,
 		options: {
+			styleId: 2,
 			templateId: 2
-		},
-		map: map
-	});
+      }
+	});	
 	
 	sliderContainer.appendChild(sliderValue);
 	sliderContainer.appendChild(slider);
@@ -505,7 +505,7 @@ initialize = function() {
 	
 	google.maps.event.addListenerOnce(map, 'idle', function() {
 		var checkLoad = window.setInterval(check, 1000);
-	
+		
 		function check(){
 			if(!$(".selectedLayer").length){
 				updateSlider();
@@ -523,11 +523,11 @@ initialize();
 google.maps.event.addListener(map, 'zoom_changed', function() { 
 	var zoomLevel = map.getZoom(); 
 	// Show a finer geometry when the map is zoomed in 
-	if (zoomLevel > 6 && !isZoomed) { 
+	if (zoomLevel > 8 && !isZoomed) { 
 		changeZoomLayers(true);
 	} 
 	// Show a coarser geometry when the map is zoomed out 
-	else if(zoomLevel <= 6 && isZoomed) { 
+	else if(zoomLevel <= 8 && isZoomed) { 
 		changeZoomLayers(false);
 	} 	
 });
