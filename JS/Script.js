@@ -13,6 +13,7 @@ var valueGroups = [];
 var layersHidden = true;
 var isZoomed = false;
 var selLayerNum;
+var style = [];
 
 //change layer bar
 var nav = document.createElement("div");
@@ -91,7 +92,81 @@ updateSlider = function(){
 		} if(width*tmp >width-30){
 			tmp = (width-30)/width;
 		}
-		$(sliderValue).css('left','calc('+tmp*100+'% - 25px)');
+		$(sliderValue).css('left','calc('+tmp*100+'% - 25px)');	
+		getData();	
+	}
+}
+function getData() {
+	//update region styles
+	var opts = {sendMethod: 'auto'};
+	var query = new google.visualization.Query('http://www.google.com/fusiontables/gvizdata', opts);
+	query.setQuery("SELECT 'col2', 'OriginalValue' FROM "+selLayer+" WHERE "+dateCnst);
+	query.send(handleQueryResponse);
+}
+
+function region(_name, _value){
+	this.name = _name, 
+	this.value = _value, 
+	this.count = 1
+};
+			
+function handleQueryResponse(response){
+	if(!response.isError()){
+		var regions = [];
+		var data = response.getDataTable();
+		var rows = data.getNumberOfRows();
+		for(var i = 0; i < rows; i++){
+			var contains = false;
+			var x = 0;
+			while((x < regions.length) && !contains){
+				if(regions[x].name == data.getValue(i,0)){
+					regions[x].value += data.getValue(i,1);
+					regions[x].count++;
+					contains = true;
+				}
+				x++;
+			}
+			if(!contains){
+				regions.push(new region(data.getValue(i,0),data.getValue(i,1)));
+			}
+		}
+		var red = "";
+		var yellow = "";
+		var green = "";
+		var blue = "";
+		for(var n = 0; n < regions.length; n++){
+			var avg = (regions[n].value/regions[n].count);
+			if(avg > valueGroups[2]){
+				red+=",'"+regions[n].name+"'";
+				} else if((avg <= valueGroups[2])&& (avg > valueGroups[1])){
+					yellow+=",'"+regions[n].name+"'";
+					} else if((avg <= valueGroups[2])&&(avg > valueGroups[1])){
+						green+=",'"+regions[n].name+"'";	
+						} else{
+							blue+=",'"+regions[n].name+"'";
+						}
+			}
+			style.push({where: "'name' IN('nores'"+red+")",
+								polygonOptions:{
+									fillColor: "#ff0000"
+								}
+							});
+			style.push({where: "'name' IN('nores'"+yellow+")",
+								polygonOptions:{
+									fillColor: "#ffff00"
+								}
+							});
+			style.push({where: "'name' IN('nores'"+green+")",
+								polygonOptions:{
+									fillColor: "#39e600"
+								}
+							});
+			style.push({where: "'name' IN('nores'"+blue+")",
+								polygonOptions:{
+									fillColor: "#0099ff"
+								}
+							});		
+			regionLayer.set("styles",style);
 	}
 }
 slider.oninput = function(){
@@ -206,7 +281,7 @@ addLayer = function() {
               }
           }
       ]
-    });
+    });	 
     
     // Create the legend and display on the map
     var tmp = document.getElementById("legend");
@@ -356,6 +431,7 @@ initialize = function() {
     layerPolys = new google.maps.FusionTablesLayer({
       map: map,
       heatmap: { enabled: false },
+	  suppressInfoWindows: true,
       query: {
         select: "col3",
         from: "1ImJBP7m2013jjmbLg6Hm0oxe4WwPizbbAr-6_GpT",
@@ -365,22 +441,20 @@ initialize = function() {
         styleId: 2,
         templateId: 2
       }
-    });  
-//WORK IN PROGRESS
-	// Add the layer which displays the regions
+    });
+
 	regionLayer = new google.maps.FusionTablesLayer({
-      map: map,
-      heatmap: { enabled: false },
-      query: {
-        select: "geometry",
-        from: "1EELxO6MjbVJW6_LG-n0_xrZ9qtNYLHIQIim7iNUN",
-        where: ""
-      },
-      options: {
-        styleId: 3,
-        templateId: 3
-      }
-    });  
+		heatmap: { enabled: false },
+		query: {
+			select: "geometry, name",
+			from: "1EELxO6MjbVJW6_LG-n0_xrZ9qtNYLHIQIim7iNUN",
+			where: ""
+		},
+		options: {
+			templateId: 2
+		},
+		map: map
+	});
 	
 	sliderContainer.appendChild(sliderValue);
 	sliderContainer.appendChild(slider);
@@ -431,7 +505,7 @@ function changeZoomLayers(isZoomedIn){
 			curLayer.setMap(map);
 		}
 		isZoomed = false;
-	}
+	}	
 }
-		
-	//layerPolys.setMap(null);          
+google.charts.load('current', {callback: getData});
+

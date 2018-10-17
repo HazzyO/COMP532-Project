@@ -1,0 +1,27 @@
+for(var n = 0; n < regions.length; n++){
+			regionLayer.set("styles",[
+			{
+				where: "'name' = "+regions[n].name+" AND "+(regions[n].value/regions[n].count)+" > "+ valueGroups[2],
+				polygonOptions:{
+					fillColor: "#ff0000"
+				}
+			},
+			{
+              where:  "'name' = "+regions[n].name+" AND "+(regions[n].value/regions[n].count)+" <= " + valueGroups[2],
+              polygonOptions:{
+				  fillColor: "#ffff00"
+			  }
+			},
+			{
+              where:  "'name' = "+regions[n].name+" AND "+(regions[n].value/regions[n].count)+" <= " + valueGroups[1],
+              polygonOptions:{
+				  fillColor: "#39e600"
+			  }
+			},
+			{
+              where:  "'name' = "+regions[n].name+" AND "+(regions[n].value/regions[n].count)+" <= " + valueGroups[0],
+              polygonOptions:{
+				  fillColor: "#0099ff"
+			  }
+			}
+			]);		
