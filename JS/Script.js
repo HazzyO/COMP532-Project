@@ -4,12 +4,10 @@ var map;
 var selLayer;
 var curLayer;
 var regionLayer;
-var selLayerDiv;
 var dateCnst = "";
 var layerPolys;
-var month;
-var year;
 var valueGroups = [];
+var units = "";
 var layersHidden = true;
 var isZoomed = false;
 var selLayerNum;
@@ -177,52 +175,60 @@ slider.oninput = function(){
 setLayer = function(i){
 	selLayerNum = i;
 	switch(i){
-        case 0: selLayer="1fLMfcSWoNcHWxAntzKnXmNrfjfy-YSC_QbXqNcZI"; // Assign the appropriate table reference
-		$(".selectedLayer").removeClass("selectedLayer");             // Remove the highlight from previous selection
-		$('#bdisc').addClass("selectedLayer");                        // Add highlight to current selection
-        setGroups(2, 5, 12);                                          // Set the range divisions for low, medium & high
-		addLayer();                                                   // Update the map with user selections
+        case 0: selLayer="1fLMfcSWoNcHWxAntzKnXmNrfjfy-YSC_QbXqNcZI";   // Assign the appropriate table reference
+		$(".selectedLayer").removeClass("selectedLayer");               // Remove the highlight from previous selection
+		$('#bdisc').addClass("selectedLayer");                          // Add highlight to current selection
+        setGroups(2, 5, 12);                                            // Set the range divisions for low, medium & high
+        units = "mg/m<sup>3</sup>";                                                     // Set the units to be used
+		addLayer();                                                     // Update the map with user selections
 		break;
     	case 1: selLayer="1ejAYrtvIR-S7XzY7s6Qjj7d7sQu2TqLrMDTykwef";
 		$(".selectedLayer").removeClass("selectedLayer");
 		$('#drp').addClass("selectedLayer");
         setGroups(0.010, 0.020, 0.050);
+        units = "mg/m<sup>3</sup>";
 		addLayer();
     	break;
     	case 2: selLayer="1ia1bHfcAQrChqxtF9AEYz6_4MYfkegYJKDGcHZj8";
 		$(".selectedLayer").removeClass("selectedLayer");
 		$('#ecoli').addClass("selectedLayer");
         setGroups(540, 1000, 1200);
+        units = "E. coli/100 mL";
 		addLayer();
     	break;
     	case 3: selLayer="1HqqTJHr7nyNccYWFrvvozPpqb0HXKcOPYxOg8v8S";
 		$(".selectedLayer").removeClass("selectedLayer");
 		$('#nh4').addClass("selectedLayer");
         setGroups(0.03, 0.24, 1.30);
+        units = "mg NH<sub>4</sub>-N/L";
 		addLayer();
     	break;
     	case 4: selLayer="1xPnv-6ahUxikMdn23Q2hF4ZFoDGmpFqx2zsoHBKf";
 		$(".selectedLayer").removeClass("selectedLayer");
 		$('#tb').addClass("selectedLayer");
         setGroups(0.03, 0.24, 1.30);
+        units = "mg/m<sup>3</sup>";
 		addLayer();
     	break;
     	case 5: selLayer="1xEsdP3obQ3-vbR37KD7mXKSydQsfr8LQjIzpaQKI";
 		$(".selectedLayer").removeClass("selectedLayer");
 		$('#tn').addClass("selectedLayer");
         setGroups(160, 350, 750);
+        units = "mg/m<sup>3</sup>";
 		addLayer();
     	break;
     	case 6: selLayer="1teN8WRrxEDmLfZbfGgGmXrEXYBR1nWCotJUy1_Hc";
 		$(".selectedLayer").removeClass("selectedLayer");
 		$('#ton').addClass("selectedLayer");
         setGroups(0.008, 0.007, 0.005);
+        units = "mg NO<sub>3</sub>-N/L";
 		addLayer();
     	break;
     	case 7: selLayer="1Ztq6JuufyZ2Vq4UDK_i3RKv7OT9PDW0SYe035JGp";
 		$(".selectedLayer").removeClass("selectedLayer");
 		$('#turb').addClass("selectedLayer");
         setGroups(1, 2.4, 6.9);
+        units = "mg NO<sub>3</sub>-N/L";
 		addLayer();
     	break;
     }
@@ -285,37 +291,72 @@ addLayer = function() {
     
     // Create the legend and display on the map
     var tmp = document.getElementById("legend");
-    if(document.body.contains(tmp))
-    {
-        tmp.parentNode.removeChild(tmp);
-    }
-    
-    var legend = document.createElement('div');
-    legend.id = 'legend';
+
     var content = [];
-    content.push('<h3>Attribute Values</h3>');
+    content.push('<h3>Values ('+units+')</h3>');
     content.push('<p><div class="color blue"></div>0 - '+valueGroups[0]+'</p>');
     content.push('<p><div class="color green"></div>'+valueGroups[0]+' - '+valueGroups[1]+'</p>');
     content.push('<p><div class="color yellow"></div>'+valueGroups[1]+' - '+valueGroups[2]+'</p>');
     content.push('<p><div class="color red"></div>'+valueGroups[2]+'+</p>');
-    legend.innerHTML = content.join('');
-    legend.index = 1;
-    map.controls[google.maps.ControlPosition.TOP_RIGHT].push(legend);
+
+    if(document.body.contains(tmp))
+    {
+        tmp.innerHTML = content.join('');
+    }else{
+        var legend = document.createElement('div');
+        legend.id = 'legend';
+        legend.innerHTML = content.join('');
+        legend.index = 1;
+        map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(legend);
+    }
 
     // Collection site click event
     google.maps.event.addListener(curLayer, 'click', function(e) {
 
-        // Add contents to the InfoWindow
-        e.infoWindowHtml = "<div style=\" width: 650px; height: 400px; overflow: auto\">"+
-            "<h2 style=\"padding-top: 15px; padding-left: 20px;\"><b>"+ e.row['SiteName'].value + "</b></h2>" +
-            "<div style=\"padding-left: 30px; font-size: 16px;\">" + e.row['Region'].value + "<br>Site ID: " + e.row['LawaID'].value + "</div>" +
-            "<div style=\"padding-left: 30px; font-size: 12px;\"><b>Longitude:</b>" + e.row['Longitude'].value + "<b> Latitude:</b>" + e.row['Latitude'].value + "</div>" +
-            "<div style=\"padding-top: 20px;\"><img src=\"http://occupodo.ddns.net:3000/?minIn=0&maxIn=10&originalValue=" + e.row['OriginalValue'].value + "&average=9&tubeColor=4&previousAverage=1&year="+ e.row['DateTime'].value +"&percentile=89th\">" +
-            "<img src=\"http://occupodo.ddns.net:3000/?minIn=0&maxIn=10&originalValue=9&average=9&tubeColor=2&previousAverage=1&year=2007&percentile=99th\" height=\"170\" width=\"120\">" +
-            "<img src=\"http://occupodo.ddns.net:3000/?minIn=0&maxIn=10&originalValue=2.13&average=5&tubeColor=1&previousAverage=9&year=2008&percentile=17th\" height=\"170\" width=\"120\">" +
-            "<img src=\"http://occupodo.ddns.net:3000/?minIn=0&maxIn=10&originalValue=5.7&average=7&tubeColor=3&previousAverage=5&year=2009&percentile=50th\" height=\"170\" width=\"120\">" +
-            "<img src=\"http://occupodo.ddns.net:3000/?minIn=0&maxIn=10&originalValue=5.7&average=7&tubeColor=0&previousAverage=7&year=2009&percentile=50th\" height=\"170\" width=\"120\"> "+
-            "</div></div>";
+        var content = [];
+        content.push('<h2 style=padding-top: 10px; padding-left: 20px; ><b>'+ e.row['SiteName'].value +'</b></h2>');
+        content.push('<div style=padding-left: 30px; padding-bottom: 5px; font-size: 16px;><i>'
+            + e.row['Region'].value + '</i><br>Site ID: ' + e.row['LawaID'].value + '</div>');
+        content.push('<div style=padding-left: 30px; padding-top:5px; font-size: 10px;><b>Longitude:</b>'
+            + e.row['Longitude'].value + ' <br><b>Latitude:</b>' + e.row['Latitude'].value + '</div>');
+        content.push('<div style=padding-top: 15px;>' +
+            '<img src="http://occupodo.ddns.net:3000/?minIn=0&maxIn=10&originalValue='
+                + e.row['OriginalValue'].value + '&average=9&tubeColor=4&previousAverage=1&year='+ e.row['DateTime'].value +'&percentile=89th">' +
+            '<img src="http://occupodo.ddns.net:3000/?minIn=0&maxIn=10&originalValue='
+                + e.row['OriginalValue'].value + '&average=3&tubeColor=2&previousAverage=5&year='+ e.row['DateTime'].value +'&percentile=66th">');
+
+
+        // content.push('<div style=padding-top: 15px;><img src="http://occupodo.ddns.net:3000/?minIn=0&maxIn=10&originalValue='
+        //     + e.row['OriginalValue'].value + '&average=3&tubeColor=2&previousAverage=5&year='+ e.row['DateTime'].value +'&percentile=66th">');
+        // content.push('<div style=padding-top: 15px;><img src="http://occupodo.ddns.net:3000/?minIn=0&maxIn=10&originalValue='
+        //     + e.row['OriginalValue'].value + '&average=6&tubeColor=3&previousAverage=6&year='+ e.row['DateTime'].value +'&percentile=38th">');
+        // content.push('<div style=padding-top: 15px;><img src="http://occupodo.ddns.net:3000/?minIn=0&maxIn=10&originalValue='
+        //     + e.row['OriginalValue'].value + '&average=4&tubeColor=1&previousAverage=3&year='+ e.row['DateTime'].value +'&percentile=75th">');
+
+
+        var infoG = document.getElementById('infographic');
+        if(document.body.contains(infoG)) {
+            // Update the existing info graphic window
+            infoG.innerHTML = content.join('');
+        }else{
+            // Create the info graphic window
+            var infoGraphic = document.createElement('div');
+            infoGraphic.id = 'infographic';
+            infoGraphic.innerHTML = content.join('');
+            infoGraphic.index = 1;
+            map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(infoGraphic);
+        }
+
+        // e.infoWindowHtml = "<div style=\" width: 650px; height: 350px; overflow: auto\">"+
+        //     "<h2 style=\"padding-top: 10px; padding-left: 20px;\"><b>"+ e.row['SiteName'].value + "</b></h2>" +
+        //     "<div style=\"padding-left: 30px; padding-bottom: 5px; font-size: 16px;\"><i>" + e.row['Region'].value + "</i><br>Site ID: " + e.row['LawaID'].value + "</div>" +
+        //     "<div style=\"padding-left: 30px; padding-top:5px; font-size: 10px;\"><b>Longitude:</b>" + e.row['Longitude'].value + " <br><b>Latitude:</b>" + e.row['Latitude'].value + "</div>" +
+        //     "<div style=\"padding-top: 15px;\"><img src=\"http://occupodo.ddns.net:3000/?minIn=0&maxIn=10&originalValue=" + e.row['OriginalValue'].value + "&average=9&tubeColor=4&previousAverage=1&year="+ e.row['DateTime'].value +"&percentile=89th\">" +
+        //     "<img src=\"http://occupodo.ddns.net:3000/?minIn=0&maxIn=10&originalValue=9&average=9&tubeColor=2&previousAverage=1&year=2007&percentile=99th\" height=\"170\" width=\"120\">" +
+        //     "<img src=\"http://occupodo.ddns.net:3000/?minIn=0&maxIn=10&originalValue=2.13&average=5&tubeColor=1&previousAverage=9&year=2008&percentile=17th\" height=\"170\" width=\"120\">" +
+        //     "<img src=\"http://occupodo.ddns.net:3000/?minIn=0&maxIn=10&originalValue=5.7&average=7&tubeColor=3&previousAverage=5&year=2009&percentile=50th\" height=\"170\" width=\"120\">" +
+        //     "<img src=\"http://occupodo.ddns.net:3000/?minIn=0&maxIn=10&originalValue=5.7&average=7&tubeColor=0&previousAverage=7&year=2009&percentile=50th\" height=\"170\" width=\"120\"> "+
+        //     "</div></div>";
     });
 }
 
@@ -473,7 +514,7 @@ initialize = function() {
 		}
 	});
 }
-//initilises the map
+// initialises the map
 initialize();
 
 //hide show layers on zoom
@@ -507,5 +548,5 @@ function changeZoomLayers(isZoomedIn){
 		isZoomed = false;
 	}	
 }
-google.charts.load('current', {callback: getData});
 
+google.charts.load('current', {callback: getData});
