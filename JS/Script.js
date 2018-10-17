@@ -144,22 +144,22 @@ function handleQueryResponse(response){
 							blue+=",'"+regions[n].name+"'";
 						}
 			}
-			style.push({where: "'name' IN('nores'"+red+")",
+			style.push({where: "'regName' IN('nores'"+red+")",
 								polygonOptions:{
 									fillColor: "#ff0000"
 								}
 							});
-			style.push({where: "'name' IN('nores'"+yellow+")",
+			style.push({where: "'regName' IN('nores'"+yellow+")",
 								polygonOptions:{
 									fillColor: "#ffff00"
 								}
 							});
-			style.push({where: "'name' IN('nores'"+green+")",
+			style.push({where: "'regName' IN('nores'"+green+")",
 								polygonOptions:{
 									fillColor: "#39e600"
 								}
 							});
-			style.push({where: "'name' IN('nores'"+blue+")",
+			style.push({where: "'regName' IN('nores'"+blue+")",
 								polygonOptions:{
 									fillColor: "#0099ff"
 								}
@@ -252,6 +252,7 @@ addLayer = function() {
 	curLayer = new google.maps.FusionTablesLayer({
       map: map,
       heatmap: { enabled: false },
+	  suppressInfoWindows: true,
       query: {
         select: "Latitude",
         from: selLayer,
