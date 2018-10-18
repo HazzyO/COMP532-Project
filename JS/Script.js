@@ -90,8 +90,8 @@ updateSlider = function(){
 		} if(width*tmp >width-30){
 			tmp = (width-30)/width;
 		}
-		$(sliderValue).css('left','calc('+tmp*100+'% - 25px)');	
-		getData();	
+		$(sliderValue).css('left','calc('+tmp*100+'% - 25px)');
+		getData();
 	}
 }
 function getData() {
@@ -103,11 +103,11 @@ function getData() {
 }
 
 function region(_name, _value){
-	this.name = _name, 
-	this.value = _value, 
+	this.name = _name,
+	this.value = _value,
 	this.count = 1
 };
-			
+
 function handleQueryResponse(response){
 	if(!response.isError()){
 		var regions = [];
@@ -139,12 +139,12 @@ function handleQueryResponse(response){
 				} else if((avg <= valueGroups[2])&& (avg > valueGroups[1])){
 					yellow+=",'"+regions[n].name+"'";
 					} else if((avg <= valueGroups[2])&&(avg > valueGroups[1])){
-						green+=",'"+regions[n].name+"'";	
+						green+=",'"+regions[n].name+"'";
 						} else{
 							blue+=",'"+regions[n].name+"'";
 						}
 			}
-			
+
 			style.push({where: "'regNames' IN('nores'"+red+")",
 								polygonOptions:{
 									fillColor: "#ff2d00"
@@ -165,6 +165,7 @@ function handleQueryResponse(response){
 									fillColor: "#0442d0"
 								}
 							});
+
 		//add average and count off sites to region info windows
 		google.maps.event.clearListeners(regionLayer, 'click');		
 		google.maps.event.addListener(regionLayer, 'click', function(e) {
@@ -186,6 +187,7 @@ function handleQueryResponse(response){
 			regionLayer.setMap(map);
 			curLayer.setMap(map);
 		}
+
 	}
 }
 slider.oninput = function(){
@@ -273,7 +275,7 @@ addLayer = function() {
 	curLayer = new google.maps.FusionTablesLayer({
       map: map,
       heatmap: { enabled: false },
-	  suppressInfoWindows: true,
+      suppressInfoWindows: true,
       query: {
         select: "Latitude",
         from: selLayer,
@@ -332,28 +334,56 @@ addLayer = function() {
         map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(legend);
     }
 
-    // Collection site click event
+    // Dirty hard coded values, will add more later
     google.maps.event.addListener(curLayer, 'click', function(e) {
+
+        var monthAverages = {minus4Av: 458.96, minus3Av: 766.89, minus2Av: 548.10, minus1Av: 400.65, minus0Av: 626.20};
+        var Awakino = {minus4: 1487, minus3:306, minus2:1156, minus1:702,  minus0:2395,  min:0.5, max: 3700};
+        var temp = Awakino;
+
         var content = [];
-        content.push('<h2 style=padding-top: 10px; padding-left: 20px; ><b>'+ e.row['SiteName'].value +'</b></h2>');
-        content.push('<div style=padding-left: 30px; padding-bottom: 5px; font-size: 16px;><i>'
-            + e.row['Region'].value + '</i><br>Site ID: ' + e.row['LawaID'].value + '</div>');
-        content.push('<div style=padding-left: 30px; padding-top:5px; font-size: 10px;><b>Longitude:</b>'
-            + e.row['Longitude'].value + ' <br><b>Latitude:</b>' + e.row['Latitude'].value + '</div>');
+        content.push('<h2><b>'+ e.row['SiteName'].value +'</b></h2>');
+        content.push('<div style= padding-bottom: 5px; font-size: 16px;><i>'+ e.row['Region'].value + '</i><br>Site ID: ' + e.row['LawaID'].value + '</div>');
+        content.push('<div style=padding-top:5px; font-size: 10px;><b>Longitude:</b>'+ e.row['Longitude'].value + ' <br><b>Latitude:</b>' + e.row['Latitude'].value + '</div>');
+
+        var date = e.row['DateTime'].value.split("/");
+        var month = parseInt(date[1]);
+        var tempDate = date[2].split(" ");
+        var year = parseInt(tempDate[0]);
+        var monthArray = [];
+
+        var i;
+        for(i = 0; i <= 3; i++) {
+            if(i == 0){
+                monthArray.push(months[month - 1] +" "+ year.toString());
+                month--; continue;
+            }
+            else if (month == 0) {
+                month = 12; year--;
+                monthArray.push(months[month - 1] +" "+ year.toString() );
+                month--;
+            } else {
+                monthArray.push(months[month - 1] +" "+ year.toString()  );
+                month--;
+            }
+        }
+
         content.push('<div style=padding-top: 15px;>' +
-            '<img src="http://occupodo.ddns.net:3000/?minIn=0&maxIn=10&originalValue='
-                + e.row['OriginalValue'].value + '&average=9&tubeColor=4&previousAverage=1&year='+ e.row['DateTime'].value +'&percentile=89th">' +
-            '<img src="http://occupodo.ddns.net:3000/?minIn=0&maxIn=10&originalValue='
-                + e.row['OriginalValue'].value + '&average=3&tubeColor=2&previousAverage=5&year='+ e.row['DateTime'].value +'&percentile=66th">');
+            '<img src="http://occupodo.ddns.net:3000/?minIn='+ temp.min +'&maxIn='+ temp.max+'&originalValue='
+                + parseInt(temp.minus3) + '&average='+ monthAverages.minus3Av +'&tubeColor='+setColour(temp.minus3)
+                +'&previousAverage='+ monthAverages.minus4Av +'&year='+ monthArray[3] +'&percentile=89th">' +
+            '<img src="http://occupodo.ddns.net:3000/?minIn='+ temp.min +'&maxIn='+ temp.max+'&originalValue='
+                + parseInt(temp.minus2) + '&average='+ monthAverages.minus2Av +'&tubeColor='+setColour(temp.minus2)
+                +'&previousAverage='+ monthAverages.minus3Av +'&year='+ monthArray[2] +'&percentile=66th">' +
+            '<img src="http://occupodo.ddns.net:3000/?minIn='+ temp.min +'&maxIn='+ temp.max+'&originalValue='
+                + temp.minus1 + '&average='+ monthAverages.minus1Av +'&tubeColor='+setColour(temp.minus1)
+                +'&previousAverage='+ monthAverages.minus2Av +'&year='+ monthArray[1] +'&percentile=73rd">' +
+            '<img src="http://occupodo.ddns.net:3000/?minIn='+ temp.min +'&maxIn='+ temp.max +'&originalValue='
+                + temp.minus0 + '&average='+ monthAverages.minus0Av +'&tubeColor='+setColour(temp.minus0)
+                +'&previousAverage='+ monthAverages.minus1Av +'&year='+ monthArray[0] +'&percentile=69th">');
 
-
-        // content.push('<div style=padding-top: 15px;><img src="http://occupodo.ddns.net:3000/?minIn=0&maxIn=10&originalValue='
-        //     + e.row['OriginalValue'].value + '&average=3&tubeColor=2&previousAverage=5&year='+ e.row['DateTime'].value +'&percentile=66th">');
-        // content.push('<div style=padding-top: 15px;><img src="http://occupodo.ddns.net:3000/?minIn=0&maxIn=10&originalValue='
-        //     + e.row['OriginalValue'].value + '&average=6&tubeColor=3&previousAverage=6&year='+ e.row['DateTime'].value +'&percentile=38th">');
-        // content.push('<div style=padding-top: 15px;><img src="http://occupodo.ddns.net:3000/?minIn=0&maxIn=10&originalValue='
-        //     + e.row['OriginalValue'].value + '&average=4&tubeColor=1&previousAverage=3&year='+ e.row['DateTime'].value +'&percentile=75th">');
-
+        // var query = "https://www.googleapis.com/fusiontables/v2/tables/1fLMfcSWoNcHWxAntzKnXmNrfjfy-YSC_QbXqNcZI/columns?key=AIzaSyCxtWZ3znmoU0djyQwb-TBdWgSOeAJiPh8";
+        // httpGetAsync(query);
 
         var infoG = document.getElementById('infographic');
         if(document.body.contains(infoG)) {
@@ -368,17 +398,27 @@ addLayer = function() {
             map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(infoGraphic);
         }
 
-        // e.infoWindowHtml = "<div style=\" width: 650px; height: 350px; overflow: auto\">"+
-        //     "<h2 style=\"padding-top: 10px; padding-left: 20px;\"><b>"+ e.row['SiteName'].value + "</b></h2>" +
-        //     "<div style=\"padding-left: 30px; padding-bottom: 5px; font-size: 16px;\"><i>" + e.row['Region'].value + "</i><br>Site ID: " + e.row['LawaID'].value + "</div>" +
-        //     "<div style=\"padding-left: 30px; padding-top:5px; font-size: 10px;\"><b>Longitude:</b>" + e.row['Longitude'].value + " <br><b>Latitude:</b>" + e.row['Latitude'].value + "</div>" +
-        //     "<div style=\"padding-top: 15px;\"><img src=\"http://occupodo.ddns.net:3000/?minIn=0&maxIn=10&originalValue=" + e.row['OriginalValue'].value + "&average=9&tubeColor=4&previousAverage=1&year="+ e.row['DateTime'].value +"&percentile=89th\">" +
-        //     "<img src=\"http://occupodo.ddns.net:3000/?minIn=0&maxIn=10&originalValue=9&average=9&tubeColor=2&previousAverage=1&year=2007&percentile=99th\" height=\"170\" width=\"120\">" +
-        //     "<img src=\"http://occupodo.ddns.net:3000/?minIn=0&maxIn=10&originalValue=2.13&average=5&tubeColor=1&previousAverage=9&year=2008&percentile=17th\" height=\"170\" width=\"120\">" +
-        //     "<img src=\"http://occupodo.ddns.net:3000/?minIn=0&maxIn=10&originalValue=5.7&average=7&tubeColor=3&previousAverage=5&year=2009&percentile=50th\" height=\"170\" width=\"120\">" +
-        //     "<img src=\"http://occupodo.ddns.net:3000/?minIn=0&maxIn=10&originalValue=5.7&average=7&tubeColor=0&previousAverage=7&year=2009&percentile=50th\" height=\"170\" width=\"120\"> "+
-        //     "</div></div>";
+        // Prevent the popup window from showing
+        e.stop();
     });
+}
+
+function setColour(value){
+    if (value <= valueGroups[0]) return 4;
+    else if (value <= valueGroups[1]) return 2;
+    else if (value <= valueGroups[2]) return 1;
+    else return 0;
+}
+function httpGetAsync(queryUrl)
+{
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.onreadystatechange = function() {
+        if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+            console.log(xmlHttp.responseText);
+        }
+    }
+    xmlHttp.open("GET", queryUrl, true); // true for asynchronous
+    xmlHttp.send(null);
 }
 
 // Create the underlying map
@@ -504,7 +544,9 @@ initialize = function() {
         templateId: 2
       }
     });
-	
+
+    });
+
 	regionLayer = new google.maps.FusionTablesLayer({
 		heatmap: { enabled: false },
 		query: {
@@ -516,7 +558,7 @@ initialize = function() {
 			styleId: 2,
 			templateId: 2
       }
-	});	
+	});
 	
 	sliderContainer.appendChild(sliderValue);
 	sliderContainer.appendChild(slider);
@@ -525,7 +567,7 @@ initialize = function() {
 	
 	google.maps.event.addListenerOnce(map, 'idle', function() {
 		var checkLoad = window.setInterval(check, 1000);
-		
+
 		function check(){
 			if(!$(".selectedLayer").length){
 				updateSlider();
@@ -567,7 +609,7 @@ function changeZoomLayers(isZoomedIn){
 			curLayer.setMap(map);
 		}
 		isZoomed = false;
-	}	
+	}
 }
 
 google.charts.load('current', {callback: getData});

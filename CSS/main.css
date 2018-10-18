@@ -136,13 +136,10 @@ section {
 }
 
 #infographic {
-	/*background: #FFF;*/
-	/*padding-left: 10px;*/
-	/*padding-right: 10px;*/
-	/*margin: 10px 10px 75px 10px;*/
-	/*font-size: 12px;*/
-	/*opacity: 0.8;*/
-	width: 550px; height: 310px;
+    text-align: right;
+    margin-right: 40px;
+    margin-bottom: 75px;
+	width: 600px; height: 270px;
 }
 
 .color {
@@ -152,21 +149,16 @@ section {
     margin-right: 3px;
     float: left;
 }
+
 .red {
-    background: #C00;
+    background: rgb(255, 102, 102);
 }
 .yellow {
-    background: #FF3;
+    background: rgb(255, 255, 153);
 }
 .green {
-    background: #6F0;
+    background: rgb(153, 255, 153);
 }
 .blue {
-    background: #06C;
-}
-#source {
-	display: block;
-	width: 100%;
-	text-align: right;
-	font-size: 12px;
+    background: rgb(153, 153, 255);
 }
