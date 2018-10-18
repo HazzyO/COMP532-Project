@@ -416,42 +416,6 @@ addLayer = function() {
         content.push('<div style= padding-bottom: 5px; font-size: 16px;><i>'+ e.row['Region'].value + '</i><br>Site ID: ' + e.row['LawaID'].value + '</div>');
         content.push('<div style=padding-top:5px; font-size: 10px;><b>Longitude:</b>'+ e.row['Longitude'].value + ' <br><b>Latitude:</b>' + e.row['Latitude'].value + '</div>');
 
-        // var date = e.row['DateTime'].value.split("/");
-        // var month = parseInt(date[1]);
-        // var tempDate = date[2].split(" ");
-        // var year = parseInt(tempDate[0]);
-        // var monthArray = [];
-        //
-        // var i;
-        // for(i = 0; i <= 3; i++) {
-        //     if(i == 0){
-        //         monthArray.push(months[month - 1] +" "+ year.toString());
-        //         month--; continue;
-        //     }
-        //     else if (month == 0) {
-        //         month = 12; year--;
-        //         monthArray.push(months[month - 1] +" "+ year.toString() );
-        //         month--;
-        //     } else {
-        //         monthArray.push(months[month - 1] +" "+ year.toString()  );
-        //         month--;
-        //     }
-        // }
-        //
-        // content.push('<div style=padding-top: 15px;>' +
-        //     '<img src="http://occupodo.ddns.net:3000/?minIn='+ temp.min +'&maxIn='+ temp.max+'&originalValue='
-        //         + parseInt(temp.minus3) + '&average='+ monthAverages.minus3Av +'&tubeColor='+setColour(temp.minus3)
-        //         +'&previousAverage='+ monthAverages.minus4Av +'&year='+ monthArray[3] +'&percentile=89th">' +
-        //     '<img src="http://occupodo.ddns.net:3000/?minIn='+ temp.min +'&maxIn='+ temp.max+'&originalValue='
-        //         + parseInt(temp.minus2) + '&average='+ monthAverages.minus2Av +'&tubeColor='+setColour(temp.minus2)
-        //         +'&previousAverage='+ monthAverages.minus3Av +'&year='+ monthArray[2] +'&percentile=66th">' +
-        //     '<img src="http://occupodo.ddns.net:3000/?minIn='+ temp.min +'&maxIn='+ temp.max+'&originalValue='
-        //         + temp.minus1 + '&average='+ monthAverages.minus1Av +'&tubeColor='+setColour(temp.minus1)
-        //         +'&previousAverage='+ monthAverages.minus2Av +'&year='+ monthArray[1] +'&percentile=73rd">' +
-        //     '<img src="http://occupodo.ddns.net:3000/?minIn='+ temp.min +'&maxIn='+ temp.max +'&originalValue='
-        //         + temp.minus0 + '&average='+ monthAverages.minus0Av +'&tubeColor='+setColour(temp.minus0)
-        //         +'&previousAverage='+ monthAverages.minus1Av +'&year='+ monthArray[0] +'&percentile=69th">');
-
         var infoG = document.getElementById('infographic');
         if(document.body.contains(infoG)) {
             // Update the existing info graphic window
@@ -521,30 +485,9 @@ function populatePictures(container){
         +parseFloat(container[0][1]) + '&average='+ monthAverages.minus0Av +'&tubeColor='+setColour(parseFloat(container[0][1]))
         +'&previousAverage='+ monthAverages.minus1Av +'&year='+ monthArray[0] +'&percentile=69th">');
 
- //   infoG.id = 'infographic';
     infoG.innerHTML += content.join('');
-   // infoG.index = 1;
-  //  infoG.innerHTML = content.join('');
-        // var query = "https://www.googleapis.com/fusiontables/v2/tables/1fLMfcSWoNcHWxAntzKnXmNrfjfy-YSC_QbXqNcZI/columns?key=AIzaSyCxtWZ3znmoU0djyQwb-TBdWgSOeAJiPh8";
-        // httpGetAsync(query);
+    }
 
-        var infoG = document.getElementById('infographic');
-        if(document.body.contains(infoG)) {
-            // Update the existing info graphic window
-            infoG.innerHTML = content.join('');
-        }else{
-            // Create the info graphic window
-            var infoGraphic = document.createElement('div');
-            infoGraphic.id = 'infographic';
-            infoGraphic.innerHTML = content.join('');
-            infoGraphic.index = 1;
-            map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(infoGraphic);
-        }
-
-        // Prevent the popup window from showing
-        //e.stop();
-    });
-}
 
 function setColour(value){
     if (value <= valueGroups[0]) return 4;
