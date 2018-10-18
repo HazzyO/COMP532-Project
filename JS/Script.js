@@ -196,12 +196,7 @@ slider.oninput = function(){
                                 query.setQuery("SELECT SiteName, RawValue, DateTime from " + selLayer
                                     + " where DateTime >= '" + startMonth + "/01/" + startYear + "' "
                                     +    "and DateTime <= '" + endMonth +   "/31/" + endYear +"' "
-                                    +    "and SiteName = '" +  siteName + "' order by DateTime");
-
-                                // "DateTime ends with '" + 9 + "/" + 10 + "' and " +
-                                             // "DateTime ends with '" + 10 + "/" + 10 + "' and " +
-                                             // "DateTime ends with '" + 11 + "/" + 10 + "' and " +
-                                             // "DateTime ends with '" + 12 + "/" + 10 + "' order by DateTime"); //limit 5
+                                    +    "and SiteName = '" +  siteName + "' order by DateTime desc");
                                 query.send(handleQueryRepsonseSynchniseData);
                             }
 
@@ -217,8 +212,12 @@ slider.oninput = function(){
                                 var container = [];
                                 for(var i = 0; i < rowCount; i++) {
                                     container[i] = [];
+                                    container[i][0] = myDataTable.getValue(i,0); // Name
+                                    container[i][1] = myDataTable.getValue(i,1); // Value
+                                    container[i][2] = myDataTable.getValue(i,2); // Date
                                     console.log(myDataTable.getValue(i,0).toString() +"," + myDataTable.getValue(i,1).toString()+"," + myDataTable.getValue(i,2).toString());
                                 }
+                                populatePictures(container);
                             }
 
 
@@ -367,50 +366,46 @@ addLayer = function() {
 
         synchroniseDataWindow(e);
 
-        var monthAverages = {minus4Av: 458.96, minus3Av: 766.89, minus2Av: 548.10, minus1Av: 400.65, minus0Av: 626.20};
-        var Awakino = {minus4: 1487, minus3:306, minus2:1156, minus1:702,  minus0:2395,  min:0.5, max: 3700};
-        var temp = Awakino;
-
         var content = [];
         content.push('<h2><b>'+ e.row['SiteName'].value +'</b></h2>');
         content.push('<div style= padding-bottom: 5px; font-size: 16px;><i>'+ e.row['Region'].value + '</i><br>Site ID: ' + e.row['LawaID'].value + '</div>');
         content.push('<div style=padding-top:5px; font-size: 10px;><b>Longitude:</b>'+ e.row['Longitude'].value + ' <br><b>Latitude:</b>' + e.row['Latitude'].value + '</div>');
 
-        var date = e.row['DateTime'].value.split("/");
-        var month = parseInt(date[1]);
-        var tempDate = date[2].split(" ");
-        var year = parseInt(tempDate[0]);
-        var monthArray = [];
-
-        var i;
-        for(i = 0; i <= 3; i++) {
-            if(i == 0){
-                monthArray.push(months[month - 1] +" "+ year.toString());
-                month--; continue;
-            }
-            else if (month == 0) {
-                month = 12; year--;
-                monthArray.push(months[month - 1] +" "+ year.toString() );
-                month--;
-            } else {
-                monthArray.push(months[month - 1] +" "+ year.toString()  );
-                month--;
-            }
-        }
-
-        content.push('<div style=padding-top: 15px;>' +
-            '<img src="http://occupodo.ddns.net:3000/?minIn='+ temp.min +'&maxIn='+ temp.max+'&originalValue='
-                + parseInt(temp.minus3) + '&average='+ monthAverages.minus3Av +'&tubeColor='+setColour(temp.minus3)
-                +'&previousAverage='+ monthAverages.minus4Av +'&year='+ monthArray[3] +'&percentile=89th">' +
-            '<img src="http://occupodo.ddns.net:3000/?minIn='+ temp.min +'&maxIn='+ temp.max+'&originalValue='
-                + parseInt(temp.minus2) + '&average='+ monthAverages.minus2Av +'&tubeColor='+setColour(temp.minus2)
-                +'&previousAverage='+ monthAverages.minus3Av +'&year='+ monthArray[2] +'&percentile=66th">' +
-            '<img src="http://occupodo.ddns.net:3000/?minIn='+ temp.min +'&maxIn='+ temp.max+'&originalValue='
-                + temp.minus1 + '&average='+ monthAverages.minus1Av +'&tubeColor='+setColour(temp.minus1)
-                +'&previousAverage='+ monthAverages.minus2Av +'&year='+ monthArray[1] +'&percentile=73rd">' +
-            '<img src="http://occupodo.ddns.net:3000/?minIn='+ temp.min +'&maxIn='+ temp.max +'&originalValue='
-                + temp.minus0 + '&average='+ monthAverages.minus0Av +'&tubeColor='+setColour(temp.minus0)
-                +'&previousAverage='+ monthAverages.minus1Av +'&year='+ monthArray[0] +'&percentile=69th">');
+        // var date = e.row['DateTime'].value.split("/");
+        // var month = parseInt(date[1]);
+        // var tempDate = date[2].split(" ");
+        // var year = parseInt(tempDate[0]);
+        // var monthArray = [];
+        //
+        // var i;
+        // for(i = 0; i <= 3; i++) {
+        //     if(i == 0){
+        //         monthArray.push(months[month - 1] +" "+ year.toString());
+        //         month--; continue;
+        //     }
+        //     else if (month == 0) {
+        //         month = 12; year--;
+        //         monthArray.push(months[month - 1] +" "+ year.toString() );
+        //         month--;
+        //     } else {
+        //         monthArray.push(months[month - 1] +" "+ year.toString()  );
+        //         month--;
+        //     }
+        // }
+        //
+        // content.push('<div style=padding-top: 15px;>' +
+        //     '<img src="http://occupodo.ddns.net:3000/?minIn='+ temp.min +'&maxIn='+ temp.max+'&originalValue='
+        //         + parseInt(temp.minus3) + '&average='+ monthAverages.minus3Av +'&tubeColor='+setColour(temp.minus3)
+        //         +'&previousAverage='+ monthAverages.minus4Av +'&year='+ monthArray[3] +'&percentile=89th">' +
+        //     '<img src="http://occupodo.ddns.net:3000/?minIn='+ temp.min +'&maxIn='+ temp.max+'&originalValue='
+        //         + parseInt(temp.minus2) + '&average='+ monthAverages.minus2Av +'&tubeColor='+setColour(temp.minus2)
+        //         +'&previousAverage='+ monthAverages.minus3Av +'&year='+ monthArray[2] +'&percentile=66th">' +
+        //     '<img src="http://occupodo.ddns.net:3000/?minIn='+ temp.min +'&maxIn='+ temp.max+'&originalValue='
+        //         + temp.minus1 + '&average='+ monthAverages.minus1Av +'&tubeColor='+setColour(temp.minus1)
+        //         +'&previousAverage='+ monthAverages.minus2Av +'&year='+ monthArray[1] +'&percentile=73rd">' +
+        //     '<img src="http://occupodo.ddns.net:3000/?minIn='+ temp.min +'&maxIn='+ temp.max +'&originalValue='
+        //         + temp.minus0 + '&average='+ monthAverages.minus0Av +'&tubeColor='+setColour(temp.minus0)
+        //         +'&previousAverage='+ monthAverages.minus1Av +'&year='+ monthArray[0] +'&percentile=69th">');
 
         var infoG = document.getElementById('infographic');
         if(document.body.contains(infoG)) {
@@ -424,10 +419,67 @@ addLayer = function() {
             infoGraphic.index = 1;
             map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(infoGraphic);
         }
-
-        // Prevent the popup window from showing
-        // e.stop(); //todo remove
     });
+}
+
+function populatePictures(container){
+
+    console.log(container.length);
+    var monthNumbers = {'Jan': 0,'Feb': 1,'Mar' : 2,'Apr' : 3,'May' : 4,'Jun' : 5,'Jul' : 6,'Aug' : 7,'Sep' : 8,'Oct' : 9,'Nov' : 10, 'Dec' : 11};
+    var dateString = container[0][2].toString();
+    var date0 = dateString.split(" "); //Tue Jun 01 2010 12:15:00 GMT+1200 (New Zealand Standard Time)
+    var monthNum = monthNumbers[date0[1]];
+    var year = parseInt(date0[3]);
+
+
+   // console.log(month + "," + year);
+
+    var monthArray = [];
+   // var monthInt = months.valueOf(month);
+   console.log("result " + monthNum+months[monthNum]);
+
+    for(i = 0; i <= container.length; i++) {
+        if(i == 0){
+            monthArray.push(months[monthNum] +" "+ year.toString());
+            monthNum--; continue;
+        }
+        else if (monthNum == 0) {
+            monthNum = 12; year--;
+            monthArray.push(months[monthNum] +" "+ year.toString() );
+            monthNum--;
+        } else {
+            monthArray.push(months[monthNum] +" "+ year.toString()  );
+            monthNum--;
+        }
+    }
+
+    var monthAverages = {minus4Av: 458.96, minus3Av: 766.89, minus2Av: 548.10, minus1Av: 400.65, minus0Av: 626.20};
+    var Awakino = {minus4: 1487, minus3:306, minus2:1156, minus1:702,  minus0:2395,  min:0.5, max: 3700};
+    var temp = Awakino;
+    var infoG = document.getElementById('infographic');
+    var i;
+    var content = [];
+
+
+
+    content.push('<div style=padding-top: 15px;>' +
+        '<img src="http://occupodo.ddns.net:3000/?minIn='+ temp.min +'&maxIn='+ temp.max+'&originalValue='
+        + parseInt(temp.minus3) + '&average='+ monthAverages.minus3Av +'&tubeColor='+setColour(temp.minus3)
+        +'&previousAverage='+ monthAverages.minus4Av +'&year='+ monthArray[3] +'&percentile=89th">' +
+        '<img src="http://occupodo.ddns.net:3000/?minIn='+ temp.min +'&maxIn='+ temp.max+'&originalValue='
+        + parseInt(temp.minus2) + '&average='+ monthAverages.minus2Av +'&tubeColor='+setColour(temp.minus2)
+        +'&previousAverage='+ monthAverages.minus3Av +'&year='+ monthArray[2] +'&percentile=66th">' +
+        '<img src="http://occupodo.ddns.net:3000/?minIn='+ temp.min +'&maxIn='+ temp.max+'&originalValue='
+        + temp.minus1 + '&average='+ monthAverages.minus1Av +'&tubeColor='+setColour(temp.minus1)
+        +'&previousAverage='+ monthAverages.minus2Av +'&year='+ monthArray[1] +'&percentile=73rd">' +
+        '<img src="http://occupodo.ddns.net:3000/?minIn='+ temp.min +'&maxIn='+ temp.max +'&originalValue='
+        + temp.minus0 + '&average='+ monthAverages.minus0Av +'&tubeColor='+setColour(temp.minus0)
+        +'&previousAverage='+ monthAverages.minus1Av +'&year='+ monthArray[0] +'&percentile=69th">');
+
+ //   infoG.id = 'infographic';
+    infoG.innerHTML += content.join('');
+   // infoG.index = 1;
+  //  infoG.innerHTML = content.join('');
 }
 
 function setColour(value){
@@ -436,7 +488,6 @@ function setColour(value){
     else if (value <= valueGroups[2]) return 1;
     else return 0;
 }
-
 
 // Create the underlying map
 initialize = function() {
@@ -593,6 +644,7 @@ initialize = function() {
 		}
 	});
 }
+
 // initialises the map
 initialize();
 
@@ -609,6 +661,7 @@ google.maps.event.addListener(map, 'zoom_changed', function() {
 		changeZoomLayers(false);
 	}
 });
+
 //update slider on map resize incl fullscreen
 google.maps.event.addListener(map, 'resize', function() {
 	updateSlider();
