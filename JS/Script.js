@@ -97,7 +97,7 @@ updateSlider = function(){
 function getData() {
 	//update region styles
 	var opts = {sendMethod: 'auto'};
-	var query = new google.visualization.Query('http://www.google.com/fusiontables/gvizdata', opts);
+	var query = new google.visualization.Query('https://www.google.com/fusiontables/gvizdata', opts);
 	query.setQuery("SELECT 'col2', 'OriginalValue' FROM "+selLayer+" WHERE "+dateCnst);
 	query.send(handleQueryResponse);
 }
