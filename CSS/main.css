@@ -44,6 +44,27 @@ section {
 	font-size: 14px;
 	cursor: pointer;
 }
+#layerBtn {
+	width: 110px;
+	padding: 5px;
+	font-size: 16px;
+	font-weight: bold;
+	margin: 10px;
+	opacity: 0.8; 
+	color: white;
+	cursor: pointer;
+	text-align: center;
+}
+#layerBtn:hover {
+	opacity: 1;
+	background-color: lightgreen;
+}
+.layerBtnHidden {
+	background-color:  gray;
+}
+.layerBtnShown {
+	background-color:  green;
+}
 .hideLayers {
 	display:none;
 }
@@ -137,9 +158,13 @@ section {
 
 #infographic {
     text-align: right;
-    margin-right: 40px;
+    margin-right: 20px;
     margin-bottom: 75px;
-	width: 600px; height: 270px;
+	width: 480px; height: 270px;
+	background-color: white;
+	opacity: 0.7;
+	padding-bottom: 10px;
+	padding-right: 10px;
 }
 
 .color {

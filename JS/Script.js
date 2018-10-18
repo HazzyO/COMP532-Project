@@ -12,12 +12,13 @@ var layersHidden = true;
 var isZoomed = false;
 var selLayerNum;
 var style = [];
+var hideLayer;
 
 //change layer bar
 var nav = document.createElement("div");
 nav.id = "nav";
 var layerText = document.createElement("span");
-layerText.appendChild(document.createTextNode("Layer: "));
+layerText.appendChild(document.createTextNode("Measurement: "));
 nav.appendChild(layerText);
 
 var arrow = (document.createElement("span"));
@@ -97,7 +98,7 @@ updateSlider = function(){
 function getData() {
 	//update region styles
 	var opts = {sendMethod: 'auto'};
-	var query = new google.visualization.Query('http://www.google.com/fusiontables/gvizdata', opts);
+	var query = new google.visualization.Query('https://www.google.com/fusiontables/gvizdata', opts);
 	query.setQuery("SELECT 'col2', 'OriginalValue' FROM "+selLayer+" WHERE "+dateCnst);
 	query.send(handleQueryResponse);
 }
@@ -165,6 +166,29 @@ function handleQueryResponse(response){
 									fillColor: "#0442d0"
 								}
 							});
+
+		//add average and count off sites to region info windows
+		google.maps.event.clearListeners(regionLayer, 'click');
+		google.maps.event.addListener(regionLayer, 'click', function(e) {
+			function isRegion(regionElement){
+					return regionElement.name == e.row['regNames'].value;
+				}
+			var reg = regions.find(isRegion);
+			if(reg!=null){
+				e.infoWindowHtml = "<div class='googft-info-window'>"+
+				"<b>"+reg.name+"</b><br>"+
+				"<b>Area:</b> "+e.row['AREA_SQ_KM'].value+" (SQ KM)<br>"+
+				"<b>Land Area:</b> "+e.row['LAND_AREA_SQ_KM'].value+" (SQ KM)<br>"+
+				"<b>Number of sites:</b> "+reg.count+"<br>"+
+				"<b>Average Value:</b> "+(reg.value/reg.count).toPrecision(4)+"<br>"+
+				"</div>"
+			}
+		});
+		if(!isZoomed&&!hideLayer){
+			regionLayer.setMap(map);
+			curLayer.setMap(map);
+		}
+
 	}
 }
 slider.oninput = function(){
@@ -286,7 +310,7 @@ setLayer = function(i){
 		$('#tn').addClass("selectedLayer");
         setGroups(160, 350, 750);
         units = "mg/m<sup>3</sup>";
-        addLayer();
+		addLayer();
     	break;
     	case 6: selLayer="1teN8WRrxEDmLfZbfGgGmXrEXYBR1nWCotJUy1_Hc";
 		$(".selectedLayer").removeClass("selectedLayer");
@@ -501,6 +525,25 @@ function populatePictures(container){
     infoG.innerHTML += content.join('');
    // infoG.index = 1;
   //  infoG.innerHTML = content.join('');
+        // var query = "https://www.googleapis.com/fusiontables/v2/tables/1fLMfcSWoNcHWxAntzKnXmNrfjfy-YSC_QbXqNcZI/columns?key=AIzaSyCxtWZ3znmoU0djyQwb-TBdWgSOeAJiPh8";
+        // httpGetAsync(query);
+
+        var infoG = document.getElementById('infographic');
+        if(document.body.contains(infoG)) {
+            // Update the existing info graphic window
+            infoG.innerHTML = content.join('');
+        }else{
+            // Create the info graphic window
+            var infoGraphic = document.createElement('div');
+            infoGraphic.id = 'infographic';
+            infoGraphic.innerHTML = content.join('');
+            infoGraphic.index = 1;
+            map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(infoGraphic);
+        }
+
+        // Prevent the popup window from showing
+        //e.stop();
+    });
 }
 
 function setColour(value){
@@ -647,6 +690,26 @@ initialize = function() {
 			templateId: 2
       }
 	});
+	var layerBtn = document.createElement("div");
+	layerBtn.className = "layerBtnShown";
+	layerBtn.id = "layerBtn";
+	hideLayer = false;
+	layerBtn.appendChild(document.createTextNode("Hide Regions"));
+	layerBtn.onclick = function(){
+		if(hideLayer == false){
+			layerBtn.childNodes[0].nodeValue = "Show Regions";
+			layerBtn.className = "layerBtnHidden";
+			regionLayer.setMap(null);
+			hideLayer = true;
+		} else {
+			layerBtn.childNodes[0].nodeValue = "Hide Regions";
+			layerBtn.className = "layerBtnShown";
+			regionLayer.setMap(map);
+			curLayer.setMap(map);
+			hideLayer = false;
+		}
+	}
+	map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(layerBtn);
 
 	sliderContainer.appendChild(sliderValue);
 	sliderContainer.appendChild(slider);
@@ -671,15 +734,17 @@ initialize();
 
 //hide show layers on zoom
 //currently as test
-google.maps.event.addListener(map, 'zoom_changed', function() {
-	var zoomLevel = map.getZoom();
-	// Show a finer geometry when the map is zoomed in
-	if (zoomLevel > 8 && !isZoomed) {
-		changeZoomLayers(true);
-	}
-	// Show a coarser geometry when the map is zoomed out
-	else if(zoomLevel <= 8 && isZoomed) {
-		changeZoomLayers(false);
+google.maps.event.addListener(map, 'zoom_changed', function() { 
+	if(hideLayer==false){
+		var zoomLevel = map.getZoom();
+		// Show a finer geometry when the map is zoomed in
+		if (zoomLevel > 7 && !isZoomed) {
+			changeZoomLayers(true);
+		}
+		// Show a coarser geometry when the map is zoomed out
+		else if(zoomLevel <= 7 && isZoomed) {
+			changeZoomLayers(false);
+		}
 	}
 });
 
