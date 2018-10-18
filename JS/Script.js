@@ -399,7 +399,7 @@ addLayer = function() {
         }
 
         // Prevent the popup window from showing
-        e.stop();
+        //e.stop();
     });
 }
 
@@ -543,8 +543,6 @@ initialize = function() {
         styleId: 2,
         templateId: 2
       }
-    });
-
     });
 
 	regionLayer = new google.maps.FusionTablesLayer({
