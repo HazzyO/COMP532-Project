@@ -171,23 +171,37 @@ slider.oninput = function(){
 	updateSlider();
 }
 
+
+//"'DateTime' >= '"+month+"/01/"+year+"'
 //query.setQuery("SELECT 'col2', 'OriginalValue' FROM "+selLayer+" WHERE "+dateCnst);
                             function synchroniseDataWindow(e){
 
                                 // Grab the site name & date
                                 var date = e.row['DateTime'].value;
                                 var siteName =  e.row['SiteName'].value;
-
+                                console.log(date);
 
                                 // .split("/");
                                 // var month = parseInt(date[1]);
                                 // var tempDate = date[2].split(" ");
                                 // var year = parseInt(tempDate[0]);
                                 // var monthArray = [];
+                                var startMonth = "Jun";
+                                var startYear = "2010";
+                                var endMonth = "Oct";
+                                var endYear = "2010";
 
                                 var opts = {sendMethod: 'auto'};
                                 var query = new google.visualization.Query('https://www.google.com/fusiontables/gvizdata', opts);
-                                query.setQuery("SELECT SiteName, count(SiteName) from " + selLayer + " group by SiteName");
+                                query.setQuery("SELECT SiteName, RawValue, DateTime from " + selLayer
+                                    + " where DateTime >= '" + startMonth + "/01/" + startYear + "' "
+                                    +    "and DateTime <= '" + endMonth +   "/31/" + endYear +"' "
+                                    +    "and SiteName = '" +  siteName + "' order by DateTime");
+
+                                // "DateTime ends with '" + 9 + "/" + 10 + "' and " +
+                                             // "DateTime ends with '" + 10 + "/" + 10 + "' and " +
+                                             // "DateTime ends with '" + 11 + "/" + 10 + "' and " +
+                                             // "DateTime ends with '" + 12 + "/" + 10 + "' order by DateTime"); //limit 5
                                 query.send(handleQueryRepsonseSynchniseData);
                             }
 
@@ -199,11 +213,11 @@ slider.oninput = function(){
 
                                 var myDataTable = response.getDataTable();
                                 var rowCount = myDataTable.getNumberOfRows();
-
+                                console.log(rowCount.toString());
                                 var container = [];
                                 for(var i = 0; i < rowCount; i++) {
                                     container[i] = [];
-                                    console.log(myDataTable.getValue(i,0).toString());
+                                    console.log(myDataTable.getValue(i,0).toString() +"," + myDataTable.getValue(i,1).toString()+"," + myDataTable.getValue(i,2).toString());
                                 }
                             }
 
