@@ -164,7 +164,28 @@ function handleQueryResponse(response){
 								polygonOptions:{
 									fillColor: "#0442d0"
 								}
-							});						
+							});
+		//add average and count off sites to region info windows
+		google.maps.event.clearListeners(regionLayer, 'click');		
+		google.maps.event.addListener(regionLayer, 'click', function(e) {
+			function isRegion(regionElement){
+					return regionElement.name == e.row['regNames'].value;
+				}
+			var reg = regions.find(isRegion);
+			if(reg!=null){
+				e.infoWindowHtml = "<div class='googft-info-window'>"+
+				"<b>"+reg.name+"</b><br>"+
+				"<b>Area:</b> "+e.row['AREA_SQ_KM'].value+" (SQ KM)<br>"+
+				"<b>Land Area:</b> "+e.row['LAND_AREA_SQ_KM'].value+" (SQ KM)<br>"+
+				"<b>Number of sites:</b> "+reg.count+"<br>"+
+				"<b>Average Value:</b> "+(reg.value/reg.count).toPrecision(4)+"<br>"+
+				"</div>"
+			}
+		});
+		if(!isZoomed){
+			regionLayer.setMap(map);
+			curLayer.setMap(map);
+		}
 	}
 }
 slider.oninput = function(){
@@ -313,7 +334,6 @@ addLayer = function() {
 
     // Collection site click event
     google.maps.event.addListener(curLayer, 'click', function(e) {
-
         var content = [];
         content.push('<h2 style=padding-top: 10px; padding-left: 20px; ><b>'+ e.row['SiteName'].value +'</b></h2>');
         content.push('<div style=padding-left: 30px; padding-bottom: 5px; font-size: 16px;><i>'
@@ -523,11 +543,11 @@ initialize();
 google.maps.event.addListener(map, 'zoom_changed', function() { 
 	var zoomLevel = map.getZoom(); 
 	// Show a finer geometry when the map is zoomed in 
-	if (zoomLevel > 8 && !isZoomed) { 
+	if (zoomLevel > 7 && !isZoomed) { 
 		changeZoomLayers(true);
 	} 
 	// Show a coarser geometry when the map is zoomed out 
-	else if(zoomLevel <= 8 && isZoomed) { 
+	else if(zoomLevel <= 7 && isZoomed) { 
 		changeZoomLayers(false);
 	} 	
 });
