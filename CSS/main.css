@@ -157,9 +157,13 @@ section {
 
 #infographic {
     text-align: right;
-    margin-right: 40px;
+    margin-right: 20px;
     margin-bottom: 75px;
-	width: 600px; height: 270px;
+	width: 480px; height: 270px;
+	background-color: white;
+	opacity: 0.7;
+	padding-bottom: 10px;
+	padding-right: 10px;
 }
 
 .color {
