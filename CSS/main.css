@@ -45,14 +45,18 @@ section {
 	cursor: pointer;
 }
 #layerBtn {
-	width: 100px;
-	margin: 15px;
+	width: 120px;
+	padding: 5px;
+	font-size: 16px;
+	font-weight: bold;
+	margin: 10px;
 	opacity: 0.8; 
 	color: white;
 	cursor: pointer;
 }
 #layerBtn:hover {
 	opacity: 1;
+	background-color: lightgreen;
 }
 .layerBtnHidden {
 	background-color:  gray;
