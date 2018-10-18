@@ -17,7 +17,7 @@ var style = [];
 var nav = document.createElement("div");
 nav.id = "nav";
 var layerText = document.createElement("span");
-layerText.appendChild(document.createTextNode("Layer: "));
+layerText.appendChild(document.createTextNode("Measurement: "));
 nav.appendChild(layerText);
 
 var arrow = (document.createElement("span"));
