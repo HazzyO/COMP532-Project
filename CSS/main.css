@@ -44,6 +44,22 @@ section {
 	font-size: 14px;
 	cursor: pointer;
 }
+#layerBtn {
+	width: 100px;
+	margin: 15px;
+	opacity: 0.8; 
+	color: white;
+	cursor: pointer;
+}
+#layerBtn:hover {
+	opacity: 1;
+}
+.layerBtnHidden {
+	background-color:  gray;
+}
+.layerBtnShown {
+	background-color:  green;
+}
 .hideLayers {
 	display:none;
 }

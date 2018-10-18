@@ -12,12 +12,13 @@ var layersHidden = true;
 var isZoomed = false;
 var selLayerNum;
 var style = [];
+var hideLayer;
 
 //change layer bar
 var nav = document.createElement("div");
 nav.id = "nav";
 var layerText = document.createElement("span");
-layerText.appendChild(document.createTextNode("Layer: "));
+layerText.appendChild(document.createTextNode("Measurement: "));
 nav.appendChild(layerText);
 
 var arrow = (document.createElement("span"));
@@ -183,7 +184,7 @@ function handleQueryResponse(response){
 				"</div>"
 			}
 		});
-		if(!isZoomed){
+		if(!isZoomed&&!hideLayer){
 			regionLayer.setMap(map);
 			curLayer.setMap(map);
 		}
@@ -557,7 +558,26 @@ initialize = function() {
 			templateId: 2
       }
 	});
-	
+	var layerBtn = document.createElement("div");
+	layerBtn.className = "layerBtnShown";
+	layerBtn.id = "layerBtn";
+	hideLayer = false;
+	layerBtn.appendChild(document.createTextNode("Hide Regions"));
+	layerBtn.onclick = function(){
+		if(hideLayer == false){
+			layerBtn.childNodes[0].nodeValue = "Show Regions";
+			layerBtn.className = "layerBtnHidden";
+			regionLayer.setMap(null);
+			hideLayer = true;
+		} else {
+			layerBtn.childNodes[0].nodeValue = "Hide Regions";
+			layerBtn.className = "layerBtnShown";
+			regionLayer.setMap(map);
+			curLayer.setMap(map);
+			hideLayer = false;
+		}
+	}
+	map.controls[google.maps.ControlPosition.LEFT_CENTER].push(layerBtn);
 	sliderContainer.appendChild(sliderValue);
 	sliderContainer.appendChild(slider);
 	map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(sliderContainer);
@@ -581,15 +601,17 @@ initialize();
 //hide show layers on zoom
 //currently as test
 google.maps.event.addListener(map, 'zoom_changed', function() { 
-	var zoomLevel = map.getZoom(); 
-	// Show a finer geometry when the map is zoomed in 
-	if (zoomLevel > 7 && !isZoomed) { 
-		changeZoomLayers(true);
-	} 
-	// Show a coarser geometry when the map is zoomed out 
-	else if(zoomLevel <= 7 && isZoomed) { 
-		changeZoomLayers(false);
-	} 	
+	if(hideLayer==false){
+		var zoomLevel = map.getZoom(); 
+		// Show a finer geometry when the map is zoomed in 
+		if (zoomLevel > 7 && !isZoomed) { 
+			changeZoomLayers(true);
+		} 
+		// Show a coarser geometry when the map is zoomed out 
+		else if(zoomLevel <= 7 && isZoomed) { 
+			changeZoomLayers(false);
+		} 	
+	}
 });
 //update slider on map resize incl fullscreen
 google.maps.event.addListener(map, 'resize', function() {
