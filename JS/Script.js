@@ -179,17 +179,38 @@ slider.oninput = function(){
                                 // Grab the site name & date
                                 var date = e.row['DateTime'].value;
                                 var siteName =  e.row['SiteName'].value;
-                                console.log(date);
+                            //    console.log(date);
+                                var t = date.split(" "); // 5/05/2015 13:16
+                            //    console.log(t[0]);
 
-                                // .split("/");
-                                // var month = parseInt(date[1]);
+                                var s = t[0].split("/"); // 5/05/2015
+                                //    console.log(s[1]);
+
+                                var month = parseInt(s[1]);
                                 // var tempDate = date[2].split(" ");
-                                // var year = parseInt(tempDate[0]);
+                                var year = parseInt(s[2]);
+
+                                var temp;
+                                console.log(month +" "+ year);
+                                var startMonth;
+                                var startYear;
+
+                                if(month > 4){
+                                    startMonth = months[month - 1 - 4];
+                                    startYear = year.toString();
+                                }else{
+                                    startMonth = months[month -1 + 8];
+                                    console.log(startMonth + "<<");
+                                    // Decrease the year
+                                    temp = year - 1;
+                                    startYear = temp.toString();
+                                    console.log(startMonth + "<<" + startYear);
+                                }
                                 // var monthArray = [];
-                                var startMonth = "Jun";
-                                var startYear = "2010";
-                                var endMonth = "Oct";
-                                var endYear = "2010";
+
+                             //   var startYear = "2010";
+                                var endMonth = months[month - 1];
+                                var endYear = year;
 
                                 var opts = {sendMethod: 'auto'};
                                 var query = new google.visualization.Query('https://www.google.com/fusiontables/gvizdata', opts);
@@ -215,7 +236,7 @@ slider.oninput = function(){
                                     container[i][0] = myDataTable.getValue(i,0); // Name
                                     container[i][1] = myDataTable.getValue(i,1); // Value
                                     container[i][2] = myDataTable.getValue(i,2); // Date
-                                    console.log(myDataTable.getValue(i,0).toString() +"," + myDataTable.getValue(i,1).toString()+"," + myDataTable.getValue(i,2).toString());
+                                  //  console.log(myDataTable.getValue(i,0).toString() +"," + myDataTable.getValue(i,1).toString()+"," + myDataTable.getValue(i,2).toString());
                                 }
                                 populatePictures(container);
                             }
@@ -432,7 +453,7 @@ function populatePictures(container){
     var year = parseInt(date0[3]);
 
 
-   // console.log(month + "," + year);
+    console.log(monthNum + "," + year);
 
     var monthArray = [];
    // var monthInt = months.valueOf(month);
@@ -441,10 +462,12 @@ function populatePictures(container){
     for(i = 0; i <= container.length; i++) {
         if(i == 0){
             monthArray.push(months[monthNum] +" "+ year.toString());
-            monthNum--; continue;
+            monthNum--;
+            if(monthNum == -1) monthNum = 11; year--;
+            continue;
         }
         else if (monthNum == 0) {
-            monthNum = 12; year--;
+            monthNum = 11; year--;
             monthArray.push(months[monthNum] +" "+ year.toString() );
             monthNum--;
         } else {
@@ -454,26 +477,24 @@ function populatePictures(container){
     }
 
     var monthAverages = {minus4Av: 458.96, minus3Av: 766.89, minus2Av: 548.10, minus1Av: 400.65, minus0Av: 626.20};
-    var Awakino = {minus4: 1487, minus3:306, minus2:1156, minus1:702,  minus0:2395,  min:0.5, max: 3700};
+    var Awakino = {minus4: 1487, minus3:306, minus2:1156, minus1:702,  minus0:2395,  min:0.5, max: 4500};
     var temp = Awakino;
     var infoG = document.getElementById('infographic');
     var i;
     var content = [];
 
-
-
     content.push('<div style=padding-top: 15px;>' +
         '<img src="http://occupodo.ddns.net:3000/?minIn='+ temp.min +'&maxIn='+ temp.max+'&originalValue='
-        + parseInt(temp.minus3) + '&average='+ monthAverages.minus3Av +'&tubeColor='+setColour(temp.minus3)
+        + parseFloat(container[3][1]) + '&average='+ monthAverages.minus3Av +'&tubeColor='+setColour(parseFloat(container[3][1]))
         +'&previousAverage='+ monthAverages.minus4Av +'&year='+ monthArray[3] +'&percentile=89th">' +
         '<img src="http://occupodo.ddns.net:3000/?minIn='+ temp.min +'&maxIn='+ temp.max+'&originalValue='
-        + parseInt(temp.minus2) + '&average='+ monthAverages.minus2Av +'&tubeColor='+setColour(temp.minus2)
+        + parseFloat(container[2][1]) + '&average='+ monthAverages.minus2Av +'&tubeColor='+setColour(parseFloat(container[2][1]))
         +'&previousAverage='+ monthAverages.minus3Av +'&year='+ monthArray[2] +'&percentile=66th">' +
         '<img src="http://occupodo.ddns.net:3000/?minIn='+ temp.min +'&maxIn='+ temp.max+'&originalValue='
-        + temp.minus1 + '&average='+ monthAverages.minus1Av +'&tubeColor='+setColour(temp.minus1)
+        + parseFloat(container[1][1]) + '&average='+ monthAverages.minus1Av +'&tubeColor='+setColour(parseFloat(container[1][1]))
         +'&previousAverage='+ monthAverages.minus2Av +'&year='+ monthArray[1] +'&percentile=73rd">' +
         '<img src="http://occupodo.ddns.net:3000/?minIn='+ temp.min +'&maxIn='+ temp.max +'&originalValue='
-        + temp.minus0 + '&average='+ monthAverages.minus0Av +'&tubeColor='+setColour(temp.minus0)
+        +parseFloat(container[0][1]) + '&average='+ monthAverages.minus0Av +'&tubeColor='+setColour(parseFloat(container[0][1]))
         +'&previousAverage='+ monthAverages.minus1Av +'&year='+ monthArray[0] +'&percentile=69th">');
 
  //   infoG.id = 'infographic';
