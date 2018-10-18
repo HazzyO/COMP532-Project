@@ -577,7 +577,7 @@ initialize = function() {
 			hideLayer = false;
 		}
 	}
-	map.controls[google.maps.ControlPosition.LEFT_CENTER].push(layerBtn);
+	map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(layerBtn);
 	sliderContainer.appendChild(sliderValue);
 	sliderContainer.appendChild(slider);
 	map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(sliderContainer);
