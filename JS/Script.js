@@ -69,7 +69,7 @@ sliderValue.id = "sliderValue";
 sliderContainer.id = "sliderContainer";
 
 var months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
-	
+
 updateSlider = function(){
 	if(curLayer!=null){
 		var month = ((slider.value-1)%12)+1;
@@ -171,6 +171,43 @@ slider.oninput = function(){
 	updateSlider();
 }
 
+//query.setQuery("SELECT 'col2', 'OriginalValue' FROM "+selLayer+" WHERE "+dateCnst);
+                            function synchroniseDataWindow(e){
+
+                                // Grab the site name & date
+                                var date = e.row['DateTime'].value;
+                                var siteName =  e.row['SiteName'].value;
+
+
+                                // .split("/");
+                                // var month = parseInt(date[1]);
+                                // var tempDate = date[2].split(" ");
+                                // var year = parseInt(tempDate[0]);
+                                // var monthArray = [];
+
+                                var opts = {sendMethod: 'auto'};
+                                var query = new google.visualization.Query('https://www.google.com/fusiontables/gvizdata', opts);
+                                query.setQuery("SELECT SiteName, count(SiteName) from " + selLayer + " group by SiteName");
+                                query.send(handleQueryRepsonseSynchniseData);
+                            }
+
+                            function handleQueryRepsonseSynchniseData(response){
+                                if (response.isError()) {
+                                    alert('Error in query: ' + response.getMessage() + ' ' + response.getDetailedMessage());
+                                    return;
+                                }
+
+                                var myDataTable = response.getDataTable();
+                                var rowCount = myDataTable.getNumberOfRows();
+
+                                var container = [];
+                                for(var i = 0; i < rowCount; i++) {
+                                    container[i] = [];
+                                    console.log(myDataTable.getValue(i,0).toString());
+                                }
+                            }
+
+
 // Set the layer (water quality test) according to the user's selection
 setLayer = function(i){
 	selLayerNum = i;
@@ -179,61 +216,61 @@ setLayer = function(i){
 		$(".selectedLayer").removeClass("selectedLayer");               // Remove the highlight from previous selection
 		$('#bdisc').addClass("selectedLayer");                          // Add highlight to current selection
         setGroups(2, 5, 12);                                            // Set the range divisions for low, medium & high
-        units = "mg/m<sup>3</sup>";                                                     // Set the units to be used
-		addLayer();                                                     // Update the map with user selections
+        units = "mg/m<sup>3</sup>";                                         // Set the units to be use
+        addLayer();                                                     // Update the map with user selections
 		break;
     	case 1: selLayer="1ejAYrtvIR-S7XzY7s6Qjj7d7sQu2TqLrMDTykwef";
 		$(".selectedLayer").removeClass("selectedLayer");
 		$('#drp').addClass("selectedLayer");
         setGroups(0.010, 0.020, 0.050);
         units = "mg/m<sup>3</sup>";
-		addLayer();
+        addLayer();
     	break;
     	case 2: selLayer="1ia1bHfcAQrChqxtF9AEYz6_4MYfkegYJKDGcHZj8";
 		$(".selectedLayer").removeClass("selectedLayer");
 		$('#ecoli').addClass("selectedLayer");
         setGroups(540, 1000, 1200);
         units = "E. coli/100 mL";
-		addLayer();
+        addLayer();
     	break;
     	case 3: selLayer="1HqqTJHr7nyNccYWFrvvozPpqb0HXKcOPYxOg8v8S";
 		$(".selectedLayer").removeClass("selectedLayer");
 		$('#nh4').addClass("selectedLayer");
         setGroups(0.03, 0.24, 1.30);
         units = "mg NH<sub>4</sub>-N/L";
-		addLayer();
+        addLayer();
     	break;
     	case 4: selLayer="1xPnv-6ahUxikMdn23Q2hF4ZFoDGmpFqx2zsoHBKf";
 		$(".selectedLayer").removeClass("selectedLayer");
 		$('#tb').addClass("selectedLayer");
         setGroups(0.03, 0.24, 1.30);
         units = "mg/m<sup>3</sup>";
-		addLayer();
+        addLayer();
     	break;
     	case 5: selLayer="1xEsdP3obQ3-vbR37KD7mXKSydQsfr8LQjIzpaQKI";
 		$(".selectedLayer").removeClass("selectedLayer");
 		$('#tn').addClass("selectedLayer");
         setGroups(160, 350, 750);
         units = "mg/m<sup>3</sup>";
-		addLayer();
+        addLayer();
     	break;
     	case 6: selLayer="1teN8WRrxEDmLfZbfGgGmXrEXYBR1nWCotJUy1_Hc";
 		$(".selectedLayer").removeClass("selectedLayer");
 		$('#ton').addClass("selectedLayer");
         setGroups(0.008, 0.007, 0.005);
         units = "mg NO<sub>3</sub>-N/L";
-		addLayer();
+        addLayer();
     	break;
     	case 7: selLayer="1Ztq6JuufyZ2Vq4UDK_i3RKv7OT9PDW0SYe035JGp";
 		$(".selectedLayer").removeClass("selectedLayer");
 		$('#turb').addClass("selectedLayer");
         setGroups(1, 2.4, 6.9);
         units = "mg NO<sub>3</sub>-N/L";
-		addLayer();
+        addLayer();
     	break;
     }
     updateSlider();
-}
+};
 
 // Marker divisions for assigning colours
 function setGroups(a, b, c){
@@ -289,7 +326,7 @@ addLayer = function() {
           }
       ]
     });
-    
+
     // Create the legend and display on the map
     var tmp = document.getElementById("legend");
 
@@ -313,6 +350,8 @@ addLayer = function() {
 
     // Dirty hard coded values, will add more later
     google.maps.event.addListener(curLayer, 'click', function(e) {
+
+        synchroniseDataWindow(e);
 
         var monthAverages = {minus4Av: 458.96, minus3Av: 766.89, minus2Av: 548.10, minus1Av: 400.65, minus0Av: 626.20};
         var Awakino = {minus4: 1487, minus3:306, minus2:1156, minus1:702,  minus0:2395,  min:0.5, max: 3700};
@@ -359,9 +398,6 @@ addLayer = function() {
                 + temp.minus0 + '&average='+ monthAverages.minus0Av +'&tubeColor='+setColour(temp.minus0)
                 +'&previousAverage='+ monthAverages.minus1Av +'&year='+ monthArray[0] +'&percentile=69th">');
 
-        // var query = "https://www.googleapis.com/fusiontables/v2/tables/1fLMfcSWoNcHWxAntzKnXmNrfjfy-YSC_QbXqNcZI/columns?key=AIzaSyCxtWZ3znmoU0djyQwb-TBdWgSOeAJiPh8";
-        // httpGetAsync(query);
-
         var infoG = document.getElementById('infographic');
         if(document.body.contains(infoG)) {
             // Update the existing info graphic window
@@ -376,7 +412,7 @@ addLayer = function() {
         }
 
         // Prevent the popup window from showing
-        e.stop();
+        // e.stop(); //todo remove
     });
 }
 
@@ -386,22 +422,12 @@ function setColour(value){
     else if (value <= valueGroups[2]) return 1;
     else return 0;
 }
-function httpGetAsync(queryUrl)
-{
-    var xmlHttp = new XMLHttpRequest();
-    xmlHttp.onreadystatechange = function() {
-        if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
-            console.log(xmlHttp.responseText);
-        }
-    }
-    xmlHttp.open("GET", queryUrl, true); // true for asynchronous
-    xmlHttp.send(null);
-}
+
 
 // Create the underlying map
 initialize = function() {
     var mapDiv = document.getElementById('map');
-       
+
     map = new google.maps.Map(mapDiv, {
       center: new google.maps.LatLng(-41.273627, 172.524935),
       zoom: 5,
@@ -522,7 +548,6 @@ initialize = function() {
       }
     });
 
-    });
 
 	regionLayer = new google.maps.FusionTablesLayer({
 		heatmap: { enabled: false },
@@ -536,12 +561,12 @@ initialize = function() {
 			templateId: 2
       }
 	});
-	
+
 	sliderContainer.appendChild(sliderValue);
 	sliderContainer.appendChild(slider);
 	map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(sliderContainer);
 	map.controls[google.maps.ControlPosition.TOP_LEFT].push(nav);
-	
+
 	google.maps.event.addListenerOnce(map, 'idle', function() {
 		var checkLoad = window.setInterval(check, 1000);
 
@@ -559,16 +584,16 @@ initialize();
 
 //hide show layers on zoom
 //currently as test
-google.maps.event.addListener(map, 'zoom_changed', function() { 
-	var zoomLevel = map.getZoom(); 
-	// Show a finer geometry when the map is zoomed in 
+google.maps.event.addListener(map, 'zoom_changed', function() {
+	var zoomLevel = map.getZoom();
+	// Show a finer geometry when the map is zoomed in
 	if (zoomLevel > 8 && !isZoomed) {
 		changeZoomLayers(true);
-	} 
-	// Show a coarser geometry when the map is zoomed out 
+	}
+	// Show a coarser geometry when the map is zoomed out
 	else if(zoomLevel <= 8 && isZoomed) {
 		changeZoomLayers(false);
-	} 	
+	}
 });
 //update slider on map resize incl fullscreen
 google.maps.event.addListener(map, 'resize', function() {
